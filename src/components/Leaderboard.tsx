@@ -43,11 +43,11 @@ export function Leaderboard({ game, sessions }: LeaderboardProps) {
             >
               #{index + 1}
             </span>
-            <span className={`flex-1 ${entry.record ? 'text-white' : 'text-gray-600'}`}>
+            <span className={`flex-1 min-w-0 text-sm leading-tight ${entry.record ? 'text-white' : 'text-gray-600'}`}>
               {entry.map}
             </span>
             {entry.record ? (
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 shrink-0">
                 <div className="text-right">
                   <span className="font-mono font-bold text-orange-400">
                     {entry.record.round}

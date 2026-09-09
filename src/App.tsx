@@ -30,7 +30,7 @@ function App() {
     <div className="min-h-screen bg-gray-900 text-white">
       <header className="border-b border-gray-700 px-4 py-3 flex items-center justify-between sticky top-0 bg-gray-900 z-10">
         <h1
-          className="text-orange-400 font-bold text-xl cursor-pointer"
+          className="text-orange-400 font-bold text-lg cursor-pointer shrink-0"
           onClick={() => setView('home')}
         >
           Zombies Tracker
@@ -40,7 +40,7 @@ function App() {
             <button
               key={v}
               onClick={() => setView(v)}
-              className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
+              className={`px-3 py-2 rounded text-sm font-medium transition-colors ${
                 view === v
                   ? 'bg-orange-500 text-white'
                   : 'text-gray-400 hover:text-white'

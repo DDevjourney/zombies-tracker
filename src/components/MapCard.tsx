@@ -20,7 +20,7 @@ export function MapCard({ mapName, record, onClick }: MapCardProps) {
         </div>
       )}
       <div className="p-4">
-        <h3 className="text-white font-bold text-base mb-2 leading-tight">{mapName}</h3>
+        <h3 className="text-white font-bold text-sm mb-2 leading-tight">{mapName}</h3>
         {record ? (
           <div className="flex items-center gap-2">
             <img src={getRankIcon(record.round)} alt="rank" className="w-8 h-8 object-contain" />
