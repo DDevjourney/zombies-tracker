@@ -9,31 +9,44 @@ interface MapCardProps {
 
 export function MapCard({ mapName, record, onClick }: MapCardProps) {
   const img = MAP_IMAGES[mapName]
+
   return (
     <button
       onClick={onClick}
-      className="bg-gray-800 border border-gray-700 rounded-xl overflow-hidden text-left hover:border-orange-500 transition-colors w-full"
+      className="glass rounded overflow-hidden text-left w-full transition-all outline-none group"
+      onMouseEnter={e => (e.currentTarget.style.borderColor = 'var(--border-strong)')}
+      onMouseLeave={e => (e.currentTarget.style.borderColor = '')}
     >
       {img && (
         <div className="w-full aspect-video overflow-hidden">
-          <img src={img} alt={mapName} className="w-full h-full object-cover object-top" />
+          <img
+            src={img}
+            alt={mapName}
+            className="w-full h-full object-cover object-top transition-transform duration-300 group-hover:scale-105"
+          />
         </div>
       )}
-      <div className="p-4">
-        <h3 className="text-white font-bold text-sm mb-2 leading-tight">{mapName}</h3>
-        {record ? (
-          <div className="flex items-center gap-2">
-            <img src={getRankIcon(record.round)} alt="rank" className="w-8 h-8 object-contain" />
-            <div>
-              <p className="text-orange-400 font-mono text-xl font-bold">{record.round}</p>
-              <p className="text-gray-500 text-xs">
-                {new Date(record.played_at + 'T12:00:00').toLocaleDateString('es-ES')}
-              </p>
-            </div>
-          </div>
-        ) : (
-          <p className="text-gray-600 text-sm">Sin récord aún</p>
-        )}
+      <div className="p-3 pb-4 flex flex-col" style={{ height: '80px' }}>
+        <h3 className="text-xs font-semibold mb-2 leading-tight" style={{ color: 'var(--text-secondary)' }}>
+          {mapName}
+        </h3>
+        <div className="flex items-center gap-2 mt-auto">
+          {record ? (
+            <>
+              <img src={getRankIcon(record.round)} alt="rank" className="w-7 h-7 object-contain" />
+              <div>
+                <p className="font-score text-lg leading-none" style={{ color: 'var(--accent)' }}>
+                  {record.round}
+                </p>
+                <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>
+                  {new Date(record.played_at + 'T12:00:00').toLocaleDateString('es-ES')}
+                </p>
+              </div>
+            </>
+          ) : (
+            <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Sin récord</p>
+          )}
+        </div>
       </div>
     </button>
   )

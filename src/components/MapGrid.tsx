@@ -13,7 +13,7 @@ export function MapGrid({ game, sessions, onMapClick }: MapGridProps) {
   const maps = MAPS[game]
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3 gap-3 p-4 items-start">
+    <div className="grid grid-cols-2 md:grid-cols-3 gap-2 p-4 items-start">
       {maps.map(map => (
         <MapCard
           key={map.name}

@@ -9,9 +9,9 @@ interface LeaderboardProps {
 }
 
 const POSITION_COLORS: Record<number, string> = {
-  0: 'text-yellow-400',
-  1: 'text-gray-300',
-  2: 'text-orange-600',
+  0: '#f5c518',
+  1: '#b0b8be',
+  2: '#cd7f32',
 }
 
 export function Leaderboard({ game, sessions }: LeaderboardProps) {
@@ -20,46 +20,49 @@ export function Leaderboard({ game, sessions }: LeaderboardProps) {
 
   return (
     <div className="p-4">
-      <h2 className="text-white text-xl font-bold mb-4">Clasificación</h2>
+      <h2 className="font-display text-2xl font-bold mb-4" style={{ color: 'var(--text)' }}>
+        Clasificación
+      </h2>
 
       {entries.every(e => e.record === null) && (
-        <p className="text-gray-600 text-center py-8">
-          No hay partidas registradas en {game === 'bo1' ? 'Black Ops 1' : 'Black Ops 2'} todavía
+        <p className="text-center py-8" style={{ color: 'var(--text-muted)' }}>
+          No hay partidas en {game === 'bo1' ? 'Black Ops 1' : 'Black Ops 2'} todavía
         </p>
       )}
 
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-1.5">
         {entries.map((entry, index) => (
           <div
             key={entry.map}
-            className={`flex items-center gap-4 rounded-lg px-4 py-3 ${
-              entry.record ? 'bg-gray-800' : 'bg-gray-800/50'
-            }`}
+            className="glass flex items-center gap-4 rounded px-4 py-3"
+            style={!entry.record ? { opacity: 0.5 } : {}}
           >
             <span
-              className={`font-bold text-lg w-8 text-center ${
-                POSITION_COLORS[index] ?? 'text-gray-600'
-              }`}
+              className="font-score text-base w-7 text-center"
+              style={{ color: entry.record ? (POSITION_COLORS[index] ?? 'var(--text-secondary)') : 'var(--text-muted)' }}
             >
-              #{index + 1}
+              {index + 1}
             </span>
-            <span className={`flex-1 min-w-0 text-sm leading-tight ${entry.record ? 'text-white' : 'text-gray-600'}`}>
+            <span
+              className="flex-1 min-w-0 text-sm leading-tight"
+              style={{ color: entry.record ? 'var(--text)' : 'var(--text-muted)' }}
+            >
               {entry.map}
             </span>
             {entry.record ? (
               <div className="flex items-center gap-2 shrink-0">
                 <div className="text-right">
-                  <span className="font-mono font-bold text-orange-400">
+                  <span className="font-score font-bold" style={{ color: 'var(--accent)' }}>
                     {entry.record.round}
                   </span>
-                  <p className="text-gray-600 text-xs">
+                  <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
                     {new Date(entry.record.played_at + 'T12:00:00').toLocaleDateString('es-ES')}
                   </p>
                 </div>
                 <img src={getRankIcon(entry.record.round)} alt="rank" className="w-8 h-8 object-contain" />
               </div>
             ) : (
-              <span className="text-gray-700 font-mono">—</span>
+              <span className="font-score" style={{ color: 'var(--text-muted)' }}>—</span>
             )}
           </div>
         ))}

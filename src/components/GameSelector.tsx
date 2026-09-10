@@ -13,11 +13,19 @@ export function GameSelector({ selected, onChange }: GameSelectorProps) {
         <button
           key={game}
           onClick={() => onChange(game)}
-          className={`relative rounded-lg overflow-hidden transition-all ${
-            selected === game
-              ? 'ring-2 ring-orange-500 scale-105'
-              : 'opacity-50 hover:opacity-75'
-          }`}
+          className="relative rounded overflow-hidden transition-all outline-none"
+          style={{
+            opacity: selected === game ? 1 : 0.4,
+            outline: selected === game ? '2px solid var(--accent)' : 'none',
+            outlineOffset: '2px',
+            transform: selected === game ? 'scale(1.04)' : 'scale(1)',
+          }}
+          onMouseEnter={e => {
+            if (selected !== game) e.currentTarget.style.opacity = '0.65'
+          }}
+          onMouseLeave={e => {
+            if (selected !== game) e.currentTarget.style.opacity = '0.4'
+          }}
         >
           <img
             src={GAME_COVERS[game]}

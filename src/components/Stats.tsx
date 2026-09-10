@@ -13,43 +13,49 @@ export function Stats({ game, sessions }: StatsProps) {
 
   return (
     <div className="p-4">
-      <h2 className="text-white text-xl font-bold mb-4">Estadísticas</h2>
+      <h2 className="font-display text-2xl font-bold mb-4" style={{ color: 'var(--text)' }}>
+        Estadísticas
+      </h2>
 
-      <div className="flex flex-col gap-4">
-        <div className="bg-gray-800 rounded-xl p-5 border border-gray-700">
-          <p className="text-gray-400 text-xs uppercase tracking-wider mb-2">
+      <div className="flex flex-col gap-3">
+        <div className="glass rounded p-5">
+          <p className="text-xs mb-3" style={{ color: 'var(--text-secondary)' }}>
             Mejor récord global
           </p>
           {bestRecord ? (
             <>
-              <p className="text-orange-400 font-mono text-4xl font-bold">
+              <p className="font-score text-5xl leading-none" style={{ color: 'var(--accent)' }}>
                 {bestRecord.round}
               </p>
-              <p className="text-gray-500 text-sm mt-1">{bestRecord.map}</p>
+              <p className="text-sm mt-2" style={{ color: 'var(--text-secondary)' }}>
+                {bestRecord.map}
+              </p>
             </>
           ) : (
-            <p className="text-gray-600">Sin partidas aún</p>
+            <p style={{ color: 'var(--text-muted)' }}>Sin partidas aún</p>
           )}
         </div>
 
-        <div className="bg-gray-800 rounded-xl p-5 border border-gray-700">
-          <p className="text-gray-400 text-xs uppercase tracking-wider mb-2">
+        <div className="glass rounded p-5">
+          <p className="text-xs mb-3" style={{ color: 'var(--text-secondary)' }}>
             Mapa favorito
           </p>
-          <p className="text-white text-lg font-semibold">
-            {favoriteMap ?? <span className="text-gray-600">—</span>}
+          <p className="text-lg font-semibold" style={{ color: 'var(--text)' }}>
+            {favoriteMap ?? <span style={{ color: 'var(--text-muted)' }}>—</span>}
           </p>
-          <p className="text-gray-600 text-xs mt-1">
+          <p className="text-xs mt-1" style={{ color: 'var(--text-muted)' }}>
             {favoriteMap ? 'Mapa con más partidas' : 'Sin partidas aún'}
           </p>
         </div>
 
-        <div className="bg-gray-800 rounded-xl p-5 border border-gray-700">
-          <p className="text-gray-400 text-xs uppercase tracking-wider mb-2">
+        <div className="glass rounded p-5">
+          <p className="text-xs mb-3" style={{ color: 'var(--text-secondary)' }}>
             Total de partidas
           </p>
-          <p className="text-white font-mono text-4xl font-bold">{total}</p>
-          <p className="text-gray-600 text-xs mt-1">
+          <p className="font-score text-5xl leading-none" style={{ color: 'var(--text)' }}>
+            {total}
+          </p>
+          <p className="text-xs mt-2" style={{ color: 'var(--text-muted)' }}>
             en {game === 'bo1' ? 'Black Ops 1' : 'Black Ops 2'}
           </p>
         </div>

@@ -16,22 +16,37 @@ export function MapDetail({ game, mapName, sessions, onBack, onAddSession, onDel
 
   return (
     <div>
-      <div className="p-4 flex items-center gap-3 border-b border-gray-700">
+      <div
+        className="p-4 flex items-center gap-3"
+        style={{ borderBottom: '1px solid var(--border)' }}
+      >
         <button
           onClick={onBack}
-          className="text-gray-400 hover:text-white transition-colors text-lg"
+          className="text-lg transition-colors outline-none"
+          style={{ color: 'var(--text-secondary)' }}
+          onMouseEnter={e => (e.currentTarget.style.color = 'var(--text)')}
+          onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-secondary)')}
         >
           ←
         </button>
-        <h2 className="text-white text-xl font-bold">{mapName}</h2>
+        <h2 className="font-display text-xl font-bold" style={{ color: 'var(--text)' }}>
+          {mapName}
+        </h2>
       </div>
 
       <div className="p-4">
         {record ? (
-          <div className="bg-gray-800 rounded-xl p-6 mb-6 border border-orange-500/40">
-            <p className="text-gray-400 text-xs uppercase tracking-wider mb-2">Récord actual</p>
-            <p className="text-orange-400 font-mono text-5xl font-bold">{record.round}</p>
-            <p className="text-gray-500 text-sm mt-2">
+          <div
+            className="glass rounded p-6 mb-6"
+            style={{ borderColor: 'var(--border-strong)' }}
+          >
+            <p className="text-xs mb-3" style={{ color: 'var(--text-secondary)' }}>
+              Récord actual
+            </p>
+            <p className="font-score text-6xl leading-none" style={{ color: 'var(--accent)' }}>
+              {record.round}
+            </p>
+            <p className="text-sm mt-3" style={{ color: 'var(--text-secondary)' }}>
               {new Date(record.played_at + 'T12:00:00').toLocaleDateString('es-ES', {
                 day: 'numeric',
                 month: 'long',
@@ -40,55 +55,63 @@ export function MapDetail({ game, mapName, sessions, onBack, onAddSession, onDel
             </p>
           </div>
         ) : (
-          <div className="bg-gray-800 rounded-xl p-6 mb-6 text-center border border-gray-700">
-            <p className="text-gray-500">Sin récord en este mapa todavía</p>
+          <div className="glass rounded p-6 mb-6 text-center">
+            <p style={{ color: 'var(--text-muted)' }}>Sin récord en este mapa todavía</p>
           </div>
         )}
 
         <div className="flex justify-between items-center mb-3">
-          <h3 className="text-gray-400 text-xs font-semibold uppercase tracking-wider">
+          <h3 className="text-xs font-semibold" style={{ color: 'var(--text-secondary)' }}>
             Historial ({history.length})
           </h3>
           <button
             onClick={onAddSession}
-            className="text-sm bg-orange-500 hover:bg-orange-600 text-white px-3 py-1 rounded transition-colors"
+            className="font-display text-sm px-3 py-1 rounded transition-colors font-semibold"
+            style={{ backgroundColor: 'var(--accent)', color: '#02020f', letterSpacing: '0.03em' }}
+            onMouseEnter={e => (e.currentTarget.style.backgroundColor = 'var(--accent-dim)')}
+            onMouseLeave={e => (e.currentTarget.style.backgroundColor = 'var(--accent)')}
           >
             + Añadir
           </button>
         </div>
 
         {history.length === 0 ? (
-          <p className="text-gray-600 text-center py-8">No hay partidas registradas</p>
+          <p className="text-center py-8" style={{ color: 'var(--text-muted)' }}>
+            No hay partidas registradas
+          </p>
         ) : (
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-1.5">
             {history.map(session => {
               const isRecord = session.id === record?.id
               return (
                 <div
                   key={session.id}
-                  className={`flex justify-between items-center px-4 py-3 rounded-lg ${
-                    isRecord
-                      ? 'bg-orange-500/15 border border-orange-500/40'
-                      : 'bg-gray-800 border border-gray-700'
-                  }`}
+                  className="glass flex justify-between items-center px-4 py-3 rounded"
+                  style={isRecord ? {
+                    background: 'rgba(207, 41, 41, 0.12)',
+                    borderColor: 'rgba(207, 41, 41, 0.4)',
+                  } : {}}
                 >
                   <div className="flex items-center gap-3">
-                    <span className="font-mono font-bold text-lg text-white">
+                    <span className="font-score text-lg" style={{ color: 'var(--text)' }}>
                       {session.round}
                     </span>
                     {isRecord && (
-                      <span className="text-xs text-orange-400 font-semibold uppercase tracking-wide">
+                      <span className="text-xs font-semibold" style={{ color: 'var(--danger)' }}>
                         Récord
                       </span>
                     )}
                   </div>
                   <div className="flex items-center gap-3">
-                    <span className="text-gray-500 text-sm">
+                    <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>
                       {new Date(session.played_at + 'T12:00:00').toLocaleDateString('es-ES')}
                     </span>
                     <button
                       onClick={() => onDeleteSession(session.id)}
-                      className="text-gray-600 hover:text-red-400 transition-colors text-sm leading-none"
+                      className="text-sm leading-none transition-colors outline-none"
+                      style={{ color: 'var(--text-muted)' }}
+                      onMouseEnter={e => (e.currentTarget.style.color = 'var(--danger)')}
+                      onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-muted)')}
                       title="Borrar partida"
                     >
                       ✕
