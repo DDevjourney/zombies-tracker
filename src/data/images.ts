@@ -3,20 +3,24 @@ import type { Game } from '../types'
 const W = 'https://static.wikia.nocookie.net/callofduty/images'
 
 export const RANK_ICONS = {
-  bone:           `${W}/a/aa/Zombie_Rank_1_Icon_BOII.png/revision/latest?cb=20121223023226`,
-  skull:          `${W}/4/45/Zombie_Rank_3_Icon_BOII.png/revision/latest?cb=20121223023335`,
-  knife:          `${W}/e/ea/Zombie_Rank_5_Icon_BOII.png/revision/latest?cb=20121223023430`,
-  shotguns:       `${W}/4/4e/Zombie_Rank_7_Icon_BOII.png/revision/latest?cb=20121223024109`,
-  knifeBlue:      `${W}/3/3c/Zombie_Rank_6_Icon_BOII.png/revision/latest?cb=20121223023924`,
-  shotgunsBlue:   `${W}/f/f1/Zombie_Rank_8_Icon_BOII.png/revision/latest?cb=20121223024203`,
+  bone:         `${W}/a/aa/Zombie_Rank_1_Icon_BOII.png/revision/latest?cb=20121223023226`,
+  bones2:       `${W}/9/9e/Zombie_Rank_2_Icon_BOII.png/revision/latest?cb=20121223023300`,
+  skull:        `${W}/4/45/Zombie_Rank_3_Icon_BOII.png/revision/latest?cb=20121223023335`,
+  skullBlue:    `${W}/0/0a/Zombie_Rank_4_Icon_BOII.png/revision/latest?cb=20121223023402`,
+  knife:        `${W}/e/ea/Zombie_Rank_5_Icon_BOII.png/revision/latest?cb=20121223023430`,
+  knifeBlue:    `${W}/3/3c/Zombie_Rank_6_Icon_BOII.png/revision/latest?cb=20121223023924`,
+  shotguns:     `${W}/4/4e/Zombie_Rank_7_Icon_BOII.png/revision/latest?cb=20121223024109`,
+  shotgunsBlue: `${W}/f/f1/Zombie_Rank_8_Icon_BOII.png/revision/latest?cb=20121223024203`,
 }
 
 export function getRankIcon(round: number): string {
-  if (round >= 50) return RANK_ICONS.shotgunsBlue
-  if (round >= 41) return RANK_ICONS.knifeBlue
-  if (round >= 31) return RANK_ICONS.shotguns
-  if (round >= 21) return RANK_ICONS.knife
-  if (round >= 11) return RANK_ICONS.skull
+  if (round >= 27) return RANK_ICONS.shotgunsBlue
+  if (round >= 24) return RANK_ICONS.shotguns
+  if (round >= 21) return RANK_ICONS.knifeBlue
+  if (round >= 16) return RANK_ICONS.knife
+  if (round >= 11) return RANK_ICONS.skullBlue
+  if (round >= 8)  return RANK_ICONS.skull
+  if (round >= 6)  return RANK_ICONS.bones2
   return RANK_ICONS.bone
 }
 
