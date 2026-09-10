@@ -1,4 +1,5 @@
 import { getFavoriteMap, getBestGlobalRecord, getTotalSessions } from '../utils/stats'
+import { getRankIcon, MAP_IMAGES } from '../data/images'
 import type { Game, Session } from '../types'
 
 interface StatsProps {
@@ -23,14 +24,15 @@ export function Stats({ game, sessions }: StatsProps) {
             Mejor récord global
           </p>
           {bestRecord ? (
-            <>
+            <div className="flex items-center gap-4">
               <p className="font-score text-5xl leading-none" style={{ color: 'var(--accent)' }}>
                 {bestRecord.round}
               </p>
-              <p className="text-sm mt-2" style={{ color: 'var(--text-secondary)' }}>
+              <img src={getRankIcon(bestRecord.round)} alt="rank" className="w-12 h-12 object-contain" />
+              <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
                 {bestRecord.map}
               </p>
-            </>
+            </div>
           ) : (
             <p style={{ color: 'var(--text-muted)' }}>Sin partidas aún</p>
           )}
@@ -40,12 +42,27 @@ export function Stats({ game, sessions }: StatsProps) {
           <p className="text-xs mb-3" style={{ color: 'var(--text-secondary)' }}>
             Mapa favorito
           </p>
-          <p className="text-lg font-semibold" style={{ color: 'var(--text)' }}>
-            {favoriteMap ?? <span style={{ color: 'var(--text-muted)' }}>—</span>}
-          </p>
-          <p className="text-xs mt-1" style={{ color: 'var(--text-muted)' }}>
-            {favoriteMap ? 'Mapa con más partidas' : 'Sin partidas aún'}
-          </p>
+          {favoriteMap ? (
+            <div className="flex items-center gap-3 mt-1">
+              {MAP_IMAGES[favoriteMap] && (
+                <img
+                  src={MAP_IMAGES[favoriteMap]}
+                  alt={favoriteMap}
+                  className="w-24 rounded object-cover object-top"
+                  style={{ aspectRatio: '16/9' }}
+                />
+              )}
+              <div>
+                <p className="text-base font-semibold" style={{ color: 'var(--text)' }}>{favoriteMap}</p>
+                <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>Mapa con más partidas</p>
+              </div>
+            </div>
+          ) : (
+            <>
+              <p className="text-lg font-semibold" style={{ color: 'var(--text-muted)' }}>—</p>
+              <p className="text-xs mt-1" style={{ color: 'var(--text-muted)' }}>Sin partidas aún</p>
+            </>
+          )}
         </div>
 
         <div className="glass rounded p-5">
