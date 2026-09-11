@@ -1,4 +1,6 @@
-import { useState, type FormEvent } from 'react'
+import { useEffect, useRef, useState, type FormEvent } from 'react'
+import { animate, createTimeline, reducedMotion, shake } from '../lib/motion'
+import { getRankIcon } from '../data/images'
 import { MAPS } from '../data/maps'
 import type { Game, NewSession } from '../types'
 
@@ -25,9 +27,54 @@ export function AddSessionModal({ game, defaultMap, onAdd, onClose }: AddSession
   const [map, setMap] = useState(defaultMap ?? maps[0].name)
   const [round, setRound] = useState('')
   const [date, setDate] = useState(new Date().toISOString().split('T')[0])
+  const [saved, setSaved] = useState(false)
   const [newRecord, setNewRecord] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [savedRound, setSavedRound] = useState(0)
+  const backdropRef = useRef<HTMLDivElement>(null)
+  const panelRef = useRef<HTMLDivElement>(null)
+  const recordRef = useRef<HTMLDivElement>(null)
+  const closing = useRef(false)
+
+  useEffect(() => {
+    if (reducedMotion() || !backdropRef.current || !panelRef.current) return
+    animate(backdropRef.current, { opacity: [0, 1], duration: 200, ease: 'outQuad' })
+    animate(panelRef.current, { opacity: [0, 1], scale: [0.9, 1], duration: 300, ease: 'outCubic' })
+  }, [])
+
+  useEffect(() => {
+    if (!saved || reducedMotion() || !recordRef.current || !panelRef.current) return
+    const [title, row] = Array.from(recordRef.current.children) as HTMLElement[]
+    const [icon, num] = Array.from(row.children) as HTMLElement[]
+    if (newRecord) shake(panelRef.current, 10)
+    createTimeline()
+      .add(title, { opacity: [0, 1], scale: [1.6, 1], duration: 400, ease: 'outBack(2)' })
+      .add(num, { opacity: [0, 1], translateY: [20, 0], duration: 350, ease: 'outCubic' }, '-=150')
+      .add(num, { color: [newRecord ? '#cf2929' : '#e8a030', '#e8a030'], duration: 700 })
+      .add(icon, {
+        opacity: [0, 1],
+        scale: [0, 1.5, 1],
+        rotate: [-30, 0],
+        filter: [
+          'drop-shadow(0 0 0px rgba(207,41,41,0))',
+          'drop-shadow(0 0 18px rgba(207,41,41,1))',
+          'drop-shadow(0 0 6px rgba(207,41,41,0.6))',
+        ],
+        duration: 900,
+        ease: 'outElastic(1, .5)',
+      }, '-=800')
+  }, [saved, newRecord])
+
+  function close() {
+    if (closing.current) return
+    if (reducedMotion() || !backdropRef.current || !panelRef.current) {
+      onClose()
+      return
+    }
+    closing.current = true
+    animate(backdropRef.current, { opacity: 0, duration: 200, ease: 'inQuad' })
+    animate(panelRef.current, { opacity: 0, scale: 0.92, duration: 200, ease: 'inQuad', onComplete: onClose })
+  }
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault()
@@ -35,12 +82,9 @@ export function AddSessionModal({ game, defaultMap, onAdd, onClose }: AddSession
     try {
       const result = await onAdd({ game, map, round: Number(round), played_at: date })
       setSavedRound(Number(round))
-      if (result.isRecord) {
-        setNewRecord(true)
-        setTimeout(onClose, 2500)
-      } else {
-        onClose()
-      }
+      setNewRecord(result.isRecord)
+      setSaved(true)
+      setTimeout(close, result.isRecord ? 2500 : 1600)
     } catch (err) {
       console.error('Error al guardar la partida:', err)
       setSubmitting(false)
@@ -48,18 +92,26 @@ export function AddSessionModal({ game, defaultMap, onAdd, onClose }: AddSession
   }
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center z-50 p-4" style={{ backgroundColor: 'rgba(0,0,0,0.75)' }}>
-      <div
-        className="glass-elevated w-full max-w-sm rounded p-6"
-      >
-        {newRecord ? (
-          <div className="text-center py-8">
-            <p className="font-display text-3xl font-bold mb-2" style={{ color: 'var(--danger)', letterSpacing: '0.05em' }}>
-              ¡NUEVO RÉCORD!
+    <div
+      ref={backdropRef}
+      className="fixed inset-0 flex items-center justify-center z-50 p-4"
+      style={{ backgroundColor: 'rgba(0,0,0,0.75)' }}
+    >
+      <div ref={panelRef} className="glass-elevated w-full max-w-sm rounded p-6">
+        {saved ? (
+          <div ref={recordRef} className="text-center py-8">
+            <p
+              className="font-display text-3xl font-bold mb-2"
+              style={{ color: newRecord ? 'var(--danger)' : 'var(--text)', letterSpacing: '0.05em' }}
+            >
+              {newRecord ? '¡NUEVO RÉCORD!' : 'PARTIDA GUARDADA'}
             </p>
-            <p className="font-score text-4xl" style={{ color: 'var(--accent)' }}>
-              {savedRound}
-            </p>
+            <div className="flex items-center justify-center gap-4">
+              <img src={getRankIcon(savedRound)} alt="rank" className="w-16 h-16 object-contain" />
+              <p className="font-score text-4xl" style={{ color: 'var(--accent)' }}>
+                {savedRound}
+              </p>
+            </div>
             <p className="text-sm mt-2" style={{ color: 'var(--text-secondary)' }}>{map}</p>
           </div>
         ) : (
@@ -106,7 +158,7 @@ export function AddSessionModal({ game, defaultMap, onAdd, onClose }: AddSession
             <div className="flex gap-2 mt-1">
               <button
                 type="button"
-                onClick={onClose}
+                onClick={close}
                 className="flex-1 py-2 rounded text-sm font-semibold transition-colors"
                 style={{ background: 'rgba(2, 5, 18, 0.6)', color: 'var(--text-secondary)', border: '1px solid var(--border)' }}
                 onMouseEnter={e => (e.currentTarget.style.color = 'var(--text)')}

@@ -1,4 +1,6 @@
+import { useLayoutEffect, useRef } from 'react'
 import { getRecord, getHistory } from '../utils/stats'
+import { animate, cascadeIn, reducedMotion } from '../lib/motion'
 import type { Game, Session } from '../types'
 
 interface MapDetailProps {
@@ -13,6 +15,15 @@ interface MapDetailProps {
 export function MapDetail({ game, mapName, sessions, onBack, onAddSession, onDeleteSession }: MapDetailProps) {
   const record = getRecord(sessions, game, mapName)
   const history = getHistory(sessions, game, mapName)
+  const recordRef = useRef<HTMLDivElement>(null)
+  const listRef = useRef<HTMLDivElement>(null)
+
+  useLayoutEffect(() => {
+    if (recordRef.current && !reducedMotion()) {
+      animate(recordRef.current, { opacity: [0, 1], translateY: [12, 0], duration: 400, ease: 'outCubic' })
+    }
+    if (listRef.current) cascadeIn(listRef.current.children, 45)
+  }, [mapName])
 
   return (
     <div>
@@ -37,6 +48,7 @@ export function MapDetail({ game, mapName, sessions, onBack, onAddSession, onDel
       <div className="p-4">
         {record ? (
           <div
+            ref={recordRef}
             className="glass rounded p-6 mb-6"
             style={{ borderColor: 'var(--border-strong)' }}
           >
@@ -55,7 +67,7 @@ export function MapDetail({ game, mapName, sessions, onBack, onAddSession, onDel
             </p>
           </div>
         ) : (
-          <div className="glass rounded p-6 mb-6 text-center">
+          <div ref={recordRef} className="glass rounded p-6 mb-6 text-center">
             <p style={{ color: 'var(--text-muted)' }}>Sin récord en este mapa todavía</p>
           </div>
         )}
@@ -80,7 +92,7 @@ export function MapDetail({ game, mapName, sessions, onBack, onAddSession, onDel
             No hay partidas registradas
           </p>
         ) : (
-          <div className="flex flex-col gap-1.5">
+          <div ref={listRef} className="flex flex-col gap-1.5">
             {history.map(session => {
               const isRecord = session.id === record?.id
               return (

@@ -1,13 +1,13 @@
 import { useState } from 'react'
 import { PasswordGate } from './components/PasswordGate'
 import { GameSelector } from './components/GameSelector'
-import { MapGrid } from './components/MapGrid'
+import { MapGrid, type RecordFlash } from './components/MapGrid'
 import { AddSessionModal } from './components/AddSessionModal'
 import { MapDetail } from './components/MapDetail'
 import { Leaderboard } from './components/Leaderboard'
 import { Stats } from './components/Stats'
 import { useSessions } from './hooks/useSessions'
-import type { Game } from './types'
+import type { Game, NewSession } from './types'
 
 type View = 'home' | 'leaderboard' | 'stats' | 'map-detail'
 
@@ -25,8 +25,16 @@ function App() {
   const [selectedGame, setSelectedGame] = useState<Game>('bo1')
   const [selectedMap, setSelectedMap] = useState<string | null>(null)
   const [showModal, setShowModal] = useState(false)
+  const [recordFlash, setRecordFlash] = useState<RecordFlash | null>(null)
 
   const { sessions, loading, addSession, deleteSession } = useSessions()
+
+  async function handleAdd(session: NewSession) {
+    const result = await addSession(session)
+    if (result.isRecord) setRecordFlash({ map: session.map, ts: Date.now() })
+    return result
+  }
+
 
   if (!authed) {
     return <PasswordGate onSuccess={() => setAuthed(true)} />
@@ -87,6 +95,7 @@ function App() {
                   setSelectedMap(mapName)
                   setView('map-detail')
                 }}
+                recordFlash={recordFlash}
               />
             )}
           </>
@@ -135,7 +144,7 @@ function App() {
         <AddSessionModal
           game={selectedGame}
           defaultMap={selectedMap}
-          onAdd={addSession}
+          onAdd={handleAdd}
           onClose={() => setShowModal(false)}
         />
       )}

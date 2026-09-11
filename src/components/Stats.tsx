@@ -1,5 +1,7 @@
+import { useLayoutEffect, useRef } from 'react'
 import { getFavoriteMap, getBestGlobalRecord, getTotalSessions } from '../utils/stats'
 import { getRankIcon, MAP_IMAGES } from '../data/images'
+import { cascadeIn, countUp } from '../lib/motion'
 import type { Game, Session } from '../types'
 
 interface StatsProps {
@@ -12,20 +14,31 @@ export function Stats({ game, sessions }: StatsProps) {
   const bestRecord = getBestGlobalRecord(sessions, game)
   const total = getTotalSessions(sessions, game)
 
+  const listRef = useRef<HTMLDivElement>(null)
+  const bestRef = useRef<HTMLParagraphElement>(null)
+  const totalRef = useRef<HTMLParagraphElement>(null)
+
+  useLayoutEffect(() => {
+    if (listRef.current) cascadeIn(listRef.current.children, 90)
+    if (bestRef.current && bestRecord) countUp(bestRef.current, bestRecord.round)
+    if (totalRef.current) countUp(totalRef.current, total, 1100)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [game])
+
   return (
     <div className="p-4">
       <h2 className="font-display text-2xl font-bold mb-4" style={{ color: 'var(--text)' }}>
         Estadísticas
       </h2>
 
-      <div className="flex flex-col gap-3">
+      <div ref={listRef} className="flex flex-col gap-3">
         <div className="glass rounded p-5">
           <p className="text-xs mb-3" style={{ color: 'var(--text-secondary)' }}>
             Mejor récord global
           </p>
           {bestRecord ? (
             <div className="flex items-center gap-4">
-              <p className="font-score text-5xl leading-none" style={{ color: 'var(--accent)' }}>
+              <p ref={bestRef} className="font-score text-5xl leading-none" style={{ color: 'var(--accent)' }}>
                 {bestRecord.round}
               </p>
               <img src={getRankIcon(bestRecord.round)} alt="rank" className="w-12 h-12 object-contain" />
@@ -69,7 +82,7 @@ export function Stats({ game, sessions }: StatsProps) {
           <p className="text-xs mb-3" style={{ color: 'var(--text-secondary)' }}>
             Total de partidas
           </p>
-          <p className="font-score text-5xl leading-none" style={{ color: 'var(--text)' }}>
+          <p ref={totalRef} className="font-score text-5xl leading-none" style={{ color: 'var(--text)' }}>
             {total}
           </p>
           <p className="text-xs mt-2" style={{ color: 'var(--text-muted)' }}>
