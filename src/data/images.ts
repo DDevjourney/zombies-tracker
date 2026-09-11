@@ -14,13 +14,14 @@ export const RANK_ICONS = {
 }
 
 export function getRankIcon(round: number): string {
-  if (round >= 27) return RANK_ICONS.shotgunsBlue
-  if (round >= 24) return RANK_ICONS.shotguns
-  if (round >= 21) return RANK_ICONS.knifeBlue
-  if (round >= 16) return RANK_ICONS.knife
-  if (round >= 11) return RANK_ICONS.skullBlue
-  if (round >= 8)  return RANK_ICONS.skull
-  if (round >= 6)  return RANK_ICONS.bones2
+  if (round >= 30) return RANK_ICONS.shotgunsBlue
+  if (round >= 27) return RANK_ICONS.shotguns
+  if (round >= 23) return RANK_ICONS.knifeBlue
+  if (round >= 20) return RANK_ICONS.knife
+  if (round >= 15) return RANK_ICONS.skullBlue
+  if (round >= 10)  return RANK_ICONS.skull
+  if (round >= 7)  return RANK_ICONS.bones2
+  if (round < 7)   return RANK_ICONS.bone
   return RANK_ICONS.bone
 }
 
