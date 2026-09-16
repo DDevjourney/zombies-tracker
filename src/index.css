@@ -13,6 +13,21 @@
   --border-strong: rgba(232, 160, 48, 0.5);
   --surface: rgba(2, 5, 18, 0.62);
   --surface-elevated: rgba(2, 5, 18, 0.82);
+
+  /* Gráficas. Paleta validada contra la superficie oscura #0b0e18:
+     banda de luminosidad, suelo de croma, separación para daltonismo y
+     contraste. No cambiar sin volver a validar. */
+  --chart-record: #c47a18;
+  --chart-session: #3d8ede;
+  --chart-grid: rgba(240, 237, 228, 0.08);
+  --chart-surface: #0b0e18;
+
+  /* Rampa secuencial del heatmap: un solo tono, luminosidad monótona. */
+  --heat-0: rgba(240, 237, 228, 0.05);
+  --heat-1: #63481a;
+  --heat-2: #8f6318;
+  --heat-3: #ba7f1f;
+  --heat-4: #e8a030;
 }
 
 body {

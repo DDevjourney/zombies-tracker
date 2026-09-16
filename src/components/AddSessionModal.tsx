@@ -2,12 +2,16 @@ import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { animate, createTimeline, reducedMotion, shake } from '../lib/motion'
 import { getRankIcon } from '../data/images'
 import { MAPS } from '../data/maps'
-import type { Game, NewSession } from '../types'
+import { todayKey } from '../utils/stats'
+import type { Game, NewSession, Session } from '../types'
 
 interface AddSessionModalProps {
   game: Game
   defaultMap: string | null
   onAdd: (session: NewSession) => Promise<{ isRecord: boolean }>
+  /** Partida a modificar. Si viene, el modal entra en modo edición. */
+  editing?: Session | null
+  onUpdate?: (id: string, changes: NewSession) => Promise<{ isRecord: boolean }>
   onClose: () => void
 }
 
@@ -22,11 +26,19 @@ const inputStyle: React.CSSProperties = {
   fontSize: '14px',
 }
 
-export function AddSessionModal({ game, defaultMap, onAdd, onClose }: AddSessionModalProps) {
+export function AddSessionModal({
+  game,
+  defaultMap,
+  onAdd,
+  editing,
+  onUpdate,
+  onClose,
+}: AddSessionModalProps) {
   const maps = MAPS[game]
-  const [map, setMap] = useState(defaultMap ?? maps[0].name)
-  const [round, setRound] = useState('')
-  const [date, setDate] = useState(new Date().toISOString().split('T')[0])
+  const isEdit = !!editing
+  const [map, setMap] = useState(editing?.map ?? defaultMap ?? maps[0].name)
+  const [round, setRound] = useState(editing ? String(editing.round) : '')
+  const [date, setDate] = useState(editing?.played_at ?? todayKey())
   const [saved, setSaved] = useState(false)
   const [newRecord, setNewRecord] = useState(false)
   const [submitting, setSubmitting] = useState(false)
@@ -80,7 +92,10 @@ export function AddSessionModal({ game, defaultMap, onAdd, onClose }: AddSession
     e.preventDefault()
     setSubmitting(true)
     try {
-      const result = await onAdd({ game, map, round: Number(round), played_at: date })
+      const changes: NewSession = { game, map, round: Number(round), played_at: date }
+      const result = editing && onUpdate
+        ? await onUpdate(editing.id, changes)
+        : await onAdd(changes)
       setSavedRound(Number(round))
       setNewRecord(result.isRecord)
       setSaved(true)
@@ -104,7 +119,7 @@ export function AddSessionModal({ game, defaultMap, onAdd, onClose }: AddSession
               className="font-display text-3xl font-bold mb-2"
               style={{ color: newRecord ? 'var(--danger)' : 'var(--text)', letterSpacing: '0.05em' }}
             >
-              {newRecord ? '¡NUEVO RÉCORD!' : 'PARTIDA GUARDADA'}
+              {newRecord ? '¡NUEVO RÉCORD!' : isEdit ? 'PARTIDA ACTUALIZADA' : 'PARTIDA GUARDADA'}
             </p>
             <div className="flex items-center justify-center gap-4">
               <img src={getRankIcon(savedRound)} alt="rank" className="w-16 h-16 object-contain" />
@@ -117,7 +132,7 @@ export function AddSessionModal({ game, defaultMap, onAdd, onClose }: AddSession
         ) : (
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             <h2 className="font-display text-xl font-bold" style={{ color: 'var(--text)' }}>
-              Añadir partida
+              {isEdit ? 'Editar partida' : 'Añadir partida'}
             </h2>
 
             <div className="flex flex-col gap-1.5">
@@ -136,6 +151,7 @@ export function AddSessionModal({ game, defaultMap, onAdd, onClose }: AddSession
               <input
                 type="number"
                 min={1}
+                autoFocus
                 value={round}
                 onChange={e => setRound(e.target.value)}
                 placeholder="Ej: 25"
@@ -174,7 +190,7 @@ export function AddSessionModal({ game, defaultMap, onAdd, onClose }: AddSession
                 onMouseEnter={e => { if (!submitting && round) e.currentTarget.style.backgroundColor = 'var(--accent-dim)' }}
                 onMouseLeave={e => (e.currentTarget.style.backgroundColor = 'var(--accent)')}
               >
-                {submitting ? 'Guardando...' : 'GUARDAR'}
+                {submitting ? 'Guardando...' : isEdit ? 'ACTUALIZAR' : 'GUARDAR'}
               </button>
             </div>
           </form>

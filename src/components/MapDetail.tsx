@@ -1,6 +1,7 @@
-import { useLayoutEffect, useRef } from 'react'
-import { getRecord, getHistory } from '../utils/stats'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { getRecord, getHistory, getProgressPoints } from '../utils/stats'
 import { animate, cascadeIn, reducedMotion } from '../lib/motion'
+import { ProgressChart } from './ProgressChart'
 import type { Game, Session } from '../types'
 
 interface MapDetailProps {
@@ -9,14 +10,32 @@ interface MapDetailProps {
   sessions: Session[]
   onBack: () => void
   onAddSession: () => void
+  onEditSession: (session: Session) => void
   onDeleteSession: (id: string) => Promise<void>
 }
 
-export function MapDetail({ game, mapName, sessions, onBack, onAddSession, onDeleteSession }: MapDetailProps) {
+export function MapDetail({
+  game,
+  mapName,
+  sessions,
+  onBack,
+  onAddSession,
+  onEditSession,
+  onDeleteSession,
+}: MapDetailProps) {
   const record = getRecord(sessions, game, mapName)
   const history = getHistory(sessions, game, mapName)
+  const progress = getProgressPoints(sessions, game, mapName)
   const recordRef = useRef<HTMLDivElement>(null)
   const listRef = useRef<HTMLDivElement>(null)
+  const [confirmId, setConfirmId] = useState<string | null>(null)
+
+  // The inline confirmation auto-dismisses after a few seconds.
+  useEffect(() => {
+    if (!confirmId) return
+    const t = window.setTimeout(() => setConfirmId(null), 4000)
+    return () => clearTimeout(t)
+  }, [confirmId])
 
   useLayoutEffect(() => {
     if (recordRef.current && !reducedMotion()) {
@@ -72,6 +91,8 @@ export function MapDetail({ game, mapName, sessions, onBack, onAddSession, onDel
           </div>
         )}
 
+        {progress.length >= 2 && <ProgressChart points={progress} />}
+
         <div className="flex justify-between items-center mb-3">
           <h3 className="text-xs font-semibold" style={{ color: 'var(--text-secondary)' }}>
             Historial ({history.length})
@@ -119,15 +140,51 @@ export function MapDetail({ game, mapName, sessions, onBack, onAddSession, onDel
                       {new Date(session.played_at + 'T12:00:00').toLocaleDateString('es-ES')}
                     </span>
                     <button
-                      onClick={() => onDeleteSession(session.id)}
+                      onClick={() => onEditSession(session)}
                       className="text-sm leading-none transition-colors outline-none"
                       style={{ color: 'var(--text-muted)' }}
-                      onMouseEnter={e => (e.currentTarget.style.color = 'var(--danger)')}
+                      onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent)')}
                       onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-muted)')}
-                      title="Borrar partida"
+                      title="Editar partida"
+                      aria-label={`Editar partida de ronda ${session.round}`}
                     >
-                      ✕
+                      ✎
                     </button>
+                    {confirmId === session.id ? (
+                      <div className="flex items-center gap-1.5">
+                        <button
+                          onClick={() => {
+                            setConfirmId(null)
+                            onDeleteSession(session.id)
+                          }}
+                          className="text-xs font-semibold px-2 py-1 rounded outline-none"
+                          style={{ backgroundColor: 'var(--danger)', color: '#fff' }}
+                          aria-label={`Confirmar borrado de ronda ${session.round}`}
+                        >
+                          Borrar
+                        </button>
+                        <button
+                          onClick={() => setConfirmId(null)}
+                          className="text-xs px-2 py-1 rounded outline-none"
+                          style={{ color: 'var(--text-secondary)', border: '1px solid var(--border)' }}
+                          aria-label="Cancelar borrado"
+                        >
+                          No
+                        </button>
+                      </div>
+                    ) : (
+                      <button
+                        onClick={() => setConfirmId(session.id)}
+                        className="text-sm leading-none transition-colors outline-none"
+                        style={{ color: 'var(--text-muted)' }}
+                        onMouseEnter={e => (e.currentTarget.style.color = 'var(--danger)')}
+                        onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-muted)')}
+                        title="Borrar partida"
+                        aria-label={`Borrar partida de ronda ${session.round}`}
+                      >
+                        ✕
+                      </button>
+                    )}
                   </div>
                 </div>
               )

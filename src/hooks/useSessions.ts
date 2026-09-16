@@ -44,11 +44,34 @@ export function useSessions() {
     [sessions]
   )
 
+  const updateSession = useCallback(
+    async (id: string, changes: NewSession): Promise<{ isRecord: boolean }> => {
+      const { data, error } = await supabase
+        .from('sessions')
+        .update(changes)
+        .eq('id', id)
+        .select()
+        .single()
+
+      if (error) throw error
+
+      const updated = data as Session
+      // El récord se recalcula sin la versión antigua de esta partida, para que
+      // editar a la baja no siga contando el valor anterior.
+      const others = sessions.filter(s => s.id !== id)
+      const isRecord = isNewRecord(others, updated.game, updated.map, updated.round)
+
+      setSessions(prev => prev.map(s => (s.id === id ? updated : s)))
+      return { isRecord }
+    },
+    [sessions]
+  )
+
   const deleteSession = useCallback(async (id: string): Promise<void> => {
     const { error } = await supabase.from('sessions').delete().eq('id', id)
     if (error) throw error
     setSessions(prev => prev.filter(s => s.id !== id))
   }, [])
 
-  return { sessions, loading, addSession, deleteSession }
+  return { sessions, loading, addSession, updateSession, deleteSession }
 }

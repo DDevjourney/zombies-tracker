@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { PasswordGate } from './components/PasswordGate'
 import { GameSelector } from './components/GameSelector'
 import { MapGrid, type RecordFlash } from './components/MapGrid'
@@ -6,8 +6,11 @@ import { AddSessionModal } from './components/AddSessionModal'
 import { MapDetail } from './components/MapDetail'
 import { Leaderboard } from './components/Leaderboard'
 import { Stats } from './components/Stats'
+import { BestOfMonth } from './components/BestOfMonth'
 import { useSessions } from './hooks/useSessions'
-import type { Game, NewSession } from './types'
+import { getBestOfMonth } from './utils/stats'
+import { animate, reducedMotion } from './lib/motion'
+import type { Game, NewSession, Session } from './types'
 
 type View = 'home' | 'leaderboard' | 'stats' | 'map-detail'
 
@@ -22,17 +25,67 @@ function App() {
     () => sessionStorage.getItem('auth') === 'true'
   )
   const [view, setView] = useState<View>('home')
-  const [selectedGame, setSelectedGame] = useState<Game>('bo1')
+  const [selectedGame, setSelectedGame] = useState<Game>(() => {
+    try {
+      const stored = localStorage.getItem('game')
+      return stored === 'bo1' || stored === 'bo2' ? stored : 'bo1'
+    } catch {
+      return 'bo1'
+    }
+  })
   const [selectedMap, setSelectedMap] = useState<string | null>(null)
   const [showModal, setShowModal] = useState(false)
+  const [editingSession, setEditingSession] = useState<Session | null>(null)
   const [recordFlash, setRecordFlash] = useState<RecordFlash | null>(null)
 
-  const { sessions, loading, addSession, deleteSession } = useSessions()
+  const mainRef = useRef<HTMLElement>(null)
+
+  const { sessions, loading, addSession, updateSession, deleteSession } = useSessions()
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('game', selectedGame)
+    } catch {
+      /* storage unavailable */
+    }
+  }, [selectedGame])
+
+  // The record celebration is a one-shot: clear it so remounting cards
+  // (e.g. switching game) do not replay it.
+  useEffect(() => {
+    if (!recordFlash) return
+    const t = window.setTimeout(() => setRecordFlash(null), 2000)
+    return () => clearTimeout(t)
+  }, [recordFlash])
+
+  // Fade + slide the new view in whenever the route changes.
+  useLayoutEffect(() => {
+    if (!authed || !mainRef.current || reducedMotion()) return
+    animate(mainRef.current, { opacity: [0, 1], translateY: [10, 0], duration: 280, ease: 'outCubic' })
+  }, [view, authed])
+
+  const bestOfMonth = getBestOfMonth(sessions, selectedGame)
 
   async function handleAdd(session: NewSession) {
     const result = await addSession(session)
     if (result.isRecord) setRecordFlash({ map: session.map, ts: Date.now() })
     return result
+  }
+
+  async function handleUpdate(id: string, changes: NewSession) {
+    const result = await updateSession(id, changes)
+    if (result.isRecord) setRecordFlash({ map: changes.map, ts: Date.now() })
+    return result
+  }
+
+  function openEdit(session: Session) {
+    setEditingSession(session)
+    setShowModal(true)
+  }
+
+  function closeModal() {
+    setShowModal(false)
+    setEditingSession(null)
   }
 
 
@@ -79,7 +132,7 @@ function App() {
         </nav>
       </header>
 
-      <main className="max-w-2xl mx-auto">
+      <main ref={mainRef} className="max-w-2xl mx-auto pb-24">
         {view === 'home' && (
           <>
             <GameSelector selected={selectedGame} onChange={game => setSelectedGame(game)} />
@@ -88,15 +141,28 @@ function App() {
                 Cargando...
               </p>
             ) : (
-              <MapGrid
-                game={selectedGame}
-                sessions={sessions}
-                onMapClick={mapName => {
-                  setSelectedMap(mapName)
-                  setView('map-detail')
-                }}
-                recordFlash={recordFlash}
-              />
+              <>
+                {bestOfMonth && (
+                  <div className="px-4 pt-4">
+                    <BestOfMonth
+                      session={bestOfMonth}
+                      onClick={() => {
+                        setSelectedMap(bestOfMonth.map)
+                        setView('map-detail')
+                      }}
+                    />
+                  </div>
+                )}
+                <MapGrid
+                  game={selectedGame}
+                  sessions={sessions}
+                  onMapClick={mapName => {
+                    setSelectedMap(mapName)
+                    setView('map-detail')
+                  }}
+                  recordFlash={recordFlash}
+                />
+              </>
             )}
           </>
         )}
@@ -108,6 +174,7 @@ function App() {
             sessions={sessions}
             onBack={() => setView('home')}
             onAddSession={() => setShowModal(true)}
+            onEditSession={openEdit}
             onDeleteSession={deleteSession}
           />
         )}
@@ -130,8 +197,13 @@ function App() {
       {(view === 'home' || view === 'map-detail') && !loading && (
         <button
           onClick={() => { setShowModal(true) }}
-          className="fixed bottom-6 right-6 w-14 h-14 rounded-full flex items-center justify-center text-3xl font-bold shadow-lg transition-colors z-20"
-          style={{ backgroundColor: 'var(--accent)', color: '#02020f' }}
+          className="fixed right-5 w-16 h-16 rounded-full flex items-center justify-center text-4xl font-bold shadow-lg transition-colors z-20"
+          style={{
+            backgroundColor: 'var(--accent)',
+            color: '#02020f',
+            bottom: 'calc(1.25rem + env(safe-area-inset-bottom))',
+            boxShadow: '0 6px 24px rgba(232, 160, 48, 0.45)',
+          }}
           aria-label="Añadir partida"
           onMouseEnter={e => (e.currentTarget.style.backgroundColor = 'var(--accent-dim)')}
           onMouseLeave={e => (e.currentTarget.style.backgroundColor = 'var(--accent)')}
@@ -145,7 +217,9 @@ function App() {
           game={selectedGame}
           defaultMap={selectedMap}
           onAdd={handleAdd}
-          onClose={() => setShowModal(false)}
+          editing={editingSession}
+          onUpdate={handleUpdate}
+          onClose={closeModal}
         />
       )}
     </div>
