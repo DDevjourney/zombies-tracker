@@ -52,28 +52,28 @@ export function MapDetail({
       >
         <button
           onClick={onBack}
-          className="text-lg transition-colors outline-none"
-          style={{ color: 'var(--text-secondary)' }}
-          onMouseEnter={e => (e.currentTarget.style.color = 'var(--text)')}
-          onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-secondary)')}
+          className="btn btn-ghost chamfer"
+          style={{ minHeight: 40, padding: '0 0.7rem', borderRadius: 0 }}
+          aria-label="Volver a mapas"
         >
-          ←
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
         </button>
-        <h2 className="font-display text-xl font-bold" style={{ color: 'var(--text)' }}>
-          {mapName}
-        </h2>
+        <div>
+          <p className="hud-label">{game === 'bo1' ? 'Black Ops 1' : 'Black Ops 2'}</p>
+          <h2 className="font-display text-2xl font-bold leading-none mt-0.5" style={{ color: 'var(--text)' }}>
+            {mapName}
+          </h2>
+        </div>
       </div>
 
       <div className="p-4">
         {record ? (
           <div
             ref={recordRef}
-            className="glass rounded p-6 mb-6"
-            style={{ borderColor: 'var(--border-strong)' }}
+            className="glass chamfer p-6 mb-6"
+            style={{ borderColor: 'var(--border-strong)', boxShadow: 'var(--shadow-card), 0 0 40px rgba(232,160,48,0.08)' }}
           >
-            <p className="text-xs mb-3" style={{ color: 'var(--text-secondary)' }}>
-              Récord actual
-            </p>
+            <p className="hud-label mb-3">Récord actual</p>
             <p className="font-score text-6xl leading-none" style={{ color: 'var(--accent)' }}>
               {record.round}
             </p>
@@ -89,18 +89,17 @@ export function MapDetail({
                 href={record.video_url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 mt-4 px-3 py-1.5 rounded text-sm font-semibold transition-colors"
-                style={{ backgroundColor: 'rgba(207, 41, 41, 0.15)', color: 'var(--danger)', border: '1px solid rgba(207, 41, 41, 0.4)' }}
-                onMouseEnter={e => (e.currentTarget.style.backgroundColor = 'rgba(207, 41, 41, 0.3)')}
-                onMouseLeave={e => (e.currentTarget.style.backgroundColor = 'rgba(207, 41, 41, 0.15)')}
+                className="btn btn-danger mt-4"
+                style={{ minHeight: 38, fontSize: '0.85rem' }}
                 title={record.video_title ?? 'Ver vídeo'}
               >
-                ▶ Ver la partida
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden><path d="M7 4v16l13-8z"/></svg>
+                Ver la partida
               </a>
             )}
           </div>
         ) : (
-          <div ref={recordRef} className="glass rounded p-6 mb-6 text-center">
+          <div ref={recordRef} className="glass chamfer p-6 mb-6 text-center">
             <p style={{ color: 'var(--text-muted)' }}>Sin récord en este mapa todavía</p>
           </div>
         )}
@@ -108,17 +107,10 @@ export function MapDetail({
         {progress.length >= 2 && <ProgressChart points={progress} />}
 
         <div className="flex justify-between items-center mb-3">
-          <h3 className="text-xs font-semibold" style={{ color: 'var(--text-secondary)' }}>
-            Historial ({history.length})
-          </h3>
-          <button
-            onClick={onAddSession}
-            className="font-display text-sm px-3 py-1 rounded transition-colors font-semibold"
-            style={{ backgroundColor: 'var(--accent)', color: '#02020f', letterSpacing: '0.03em' }}
-            onMouseEnter={e => (e.currentTarget.style.backgroundColor = 'var(--accent-dim)')}
-            onMouseLeave={e => (e.currentTarget.style.backgroundColor = 'var(--accent)')}
-          >
-            + Añadir
+          <h3 className="hud-label">Historial · {history.length}</h3>
+          <button onClick={onAddSession} className="btn btn-primary" style={{ minHeight: 36, padding: '0 0.8rem', fontSize: '0.85rem' }}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="square" aria-hidden><path d="M12 5v14M5 12h14"/></svg>
+            Añadir
           </button>
         </div>
 
@@ -133,7 +125,7 @@ export function MapDetail({
               return (
                 <div
                   key={session.id}
-                  className="glass flex justify-between items-center px-4 py-3 rounded"
+                  className="glass chamfer flex justify-between items-center px-4 py-3"
                   style={isRecord ? {
                     background: 'rgba(207, 41, 41, 0.12)',
                     borderColor: 'rgba(207, 41, 41, 0.4)',
@@ -144,7 +136,10 @@ export function MapDetail({
                       {session.round}
                     </span>
                     {isRecord && (
-                      <span className="text-xs font-semibold" style={{ color: 'var(--danger)' }}>
+                      <span
+                        className="font-display text-[11px] font-bold tracking-[0.12em] uppercase px-1.5 py-0.5"
+                        style={{ color: '#ff5a63', background: 'var(--danger-soft)', border: '1px solid rgba(200,32,42,0.4)' }}
+                      >
                         Récord
                       </span>
                     )}
@@ -158,24 +153,24 @@ export function MapDetail({
                         href={session.video_url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-sm leading-none transition-colors outline-none"
-                        style={{ color: 'var(--danger)' }}
+                        className="w-9 h-9 inline-flex items-center justify-center transition-colors outline-none"
+                        style={{ color: '#ff5a63' }}
                         title={session.video_title ?? 'Ver vídeo'}
                         aria-label={`Ver vídeo de la partida de ronda ${session.round}`}
                       >
-                        ▶
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden><path d="M7 4v16l13-8z"/></svg>
                       </a>
                     )}
                     <button
                       onClick={() => onEditSession(session)}
-                      className="text-sm leading-none transition-colors outline-none"
+                      className="w-9 h-9 inline-flex items-center justify-center transition-colors outline-none"
                       style={{ color: 'var(--text-muted)' }}
                       onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent)')}
                       onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-muted)')}
                       title="Editar partida"
                       aria-label={`Editar partida de ronda ${session.round}`}
                     >
-                      ✎
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
                     </button>
                     {confirmId === session.id ? (
                       <div className="flex items-center gap-1.5">
@@ -184,16 +179,16 @@ export function MapDetail({
                             setConfirmId(null)
                             onDeleteSession(session.id)
                           }}
-                          className="text-xs font-semibold px-2 py-1 rounded outline-none"
-                          style={{ backgroundColor: 'var(--danger)', color: '#fff' }}
+                          className="btn btn-danger"
+                          style={{ minHeight: 32, padding: '0 0.7rem', fontSize: '0.78rem' }}
                           aria-label={`Confirmar borrado de ronda ${session.round}`}
                         >
                           Borrar
                         </button>
                         <button
                           onClick={() => setConfirmId(null)}
-                          className="text-xs px-2 py-1 rounded outline-none"
-                          style={{ color: 'var(--text-secondary)', border: '1px solid var(--border)' }}
+                          className="btn btn-ghost"
+                          style={{ minHeight: 32, padding: '0 0.7rem', fontSize: '0.78rem' }}
                           aria-label="Cancelar borrado"
                         >
                           No
@@ -202,14 +197,14 @@ export function MapDetail({
                     ) : (
                       <button
                         onClick={() => setConfirmId(session.id)}
-                        className="text-sm leading-none transition-colors outline-none"
+                        className="w-9 h-9 inline-flex items-center justify-center transition-colors outline-none"
                         style={{ color: 'var(--text-muted)' }}
-                        onMouseEnter={e => (e.currentTarget.style.color = 'var(--danger)')}
+                        onMouseEnter={e => (e.currentTarget.style.color = '#ff5a63')}
                         onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-muted)')}
                         title="Borrar partida"
                         aria-label={`Borrar partida de ronda ${session.round}`}
                       >
-                        ✕
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden><path d="M18 6 6 18M6 6l12 12"/></svg>
                       </button>
                     )}
                   </div>

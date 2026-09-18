@@ -45,13 +45,16 @@ export function PasswordGate({ onSuccess }: PasswordGateProps) {
 
   return (
     <div className="min-h-screen flex items-center justify-center">
-      <form ref={formRef} onSubmit={handleSubmit} className="flex flex-col gap-4 w-72">
-        <h1
-          className="font-display text-3xl font-bold text-center"
-          style={{ color: 'var(--accent)', letterSpacing: '0.08em' }}
-        >
-          ZOMBIES TRACKER
-        </h1>
+      <form ref={formRef} onSubmit={handleSubmit} className="glass-elevated chamfer flex flex-col gap-4 w-80 p-8">
+        <div className="text-center">
+          <p className="hud-label justify-center mb-2">Acceso restringido</p>
+          <h1
+            className="font-display text-4xl font-bold"
+            style={{ color: 'var(--accent)', letterSpacing: '0.1em', textShadow: '0 0 24px var(--accent-glow)' }}
+          >
+            Zombies Tracker
+          </h1>
+        </div>
         <input
           type="password"
           value={value}
@@ -60,30 +63,19 @@ export function PasswordGate({ onSuccess }: PasswordGateProps) {
             setError(false)
           }}
           placeholder="Contraseña"
-          className="px-4 py-2 rounded text-sm outline-none"
-          style={{
-            background: 'var(--surface-elevated)',
-            backdropFilter: 'blur(12px)',
-            color: 'var(--text)',
-            border: `1px solid ${error ? 'var(--danger)' : 'var(--border)'}`,
-          }}
-          onFocus={e => (e.currentTarget.style.borderColor = 'var(--border-strong)')}
-          onBlur={e => (e.currentTarget.style.borderColor = 'var(--border)')}
+          className="field"
+          style={error ? { borderColor: 'var(--danger)', borderLeftColor: 'var(--danger)' } : undefined}
+          aria-invalid={error}
+          aria-describedby={error ? 'pw-error' : undefined}
           autoFocus
         />
         {error && (
-          <p className="text-sm text-center" style={{ color: 'var(--danger)' }}>
+          <p id="pw-error" className="text-sm text-center" style={{ color: '#ff5a63' }}>
             Contraseña incorrecta
           </p>
         )}
-        <button
-          type="submit"
-          className="font-display font-bold py-2 rounded text-sm"
-          style={{ backgroundColor: 'var(--accent)', color: '#02020f', letterSpacing: '0.05em' }}
-          onMouseEnter={e => (e.currentTarget.style.backgroundColor = 'var(--accent-dim)')}
-          onMouseLeave={e => (e.currentTarget.style.backgroundColor = 'var(--accent)')}
-        >
-          ENTRAR
+        <button type="submit" className="btn btn-primary chamfer" style={{ borderRadius: 0 }}>
+          Entrar
         </button>
       </form>
     </div>

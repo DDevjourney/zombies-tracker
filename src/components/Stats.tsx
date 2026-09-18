@@ -27,15 +27,14 @@ export function Stats({ game, sessions }: StatsProps) {
 
   return (
     <div className="p-4">
-      <h2 className="font-display text-2xl font-bold mb-4" style={{ color: 'var(--text)' }}>
+      <p className="hud-label">Resumen</p>
+      <h2 className="font-display text-3xl font-bold mb-4 leading-none mt-1" style={{ color: 'var(--text)' }}>
         Estadísticas
       </h2>
 
       <div ref={listRef} className="flex flex-col gap-3">
-        <div className="glass rounded p-5">
-          <p className="text-xs mb-3" style={{ color: 'var(--text-secondary)' }}>
-            Mejor récord global
-          </p>
+        <div className="glass chamfer p-5">
+          <p className="hud-label mb-3">Mejor récord global</p>
           {bestRecord ? (
             <div className="flex items-center gap-4">
               <p ref={bestRef} className="font-score text-5xl leading-none" style={{ color: 'var(--accent)' }}>
@@ -51,10 +50,8 @@ export function Stats({ game, sessions }: StatsProps) {
           )}
         </div>
 
-        <div className="glass rounded p-5">
-          <p className="text-xs mb-3" style={{ color: 'var(--text-secondary)' }}>
-            Mapa favorito
-          </p>
+        <div className="glass chamfer p-5">
+          <p className="hud-label mb-3">Mapa favorito</p>
           {favoriteMap ? (
             <div className="flex items-center gap-3 mt-1">
               {MAP_IMAGES[favoriteMap] && (
@@ -78,10 +75,8 @@ export function Stats({ game, sessions }: StatsProps) {
           )}
         </div>
 
-        <div className="glass rounded p-5">
-          <p className="text-xs mb-3" style={{ color: 'var(--text-secondary)' }}>
-            Total de partidas
-          </p>
+        <div className="glass chamfer p-5">
+          <p className="hud-label mb-3">Total de partidas</p>
           <p ref={totalRef} className="font-score text-5xl leading-none" style={{ color: 'var(--text)' }}>
             {total}
           </p>

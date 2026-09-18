@@ -53,7 +53,8 @@ export function Leaderboard({ game, sessions }: LeaderboardProps) {
 
   return (
     <div className="p-4">
-      <h2 className="font-display text-2xl font-bold mb-4" style={{ color: 'var(--text)' }}>
+      <p className="hud-label">Ranking por mapa</p>
+      <h2 className="font-display text-3xl font-bold mb-4 leading-none mt-1" style={{ color: 'var(--text)' }}>
         Clasificación
       </h2>
 
@@ -68,7 +69,7 @@ export function Leaderboard({ game, sessions }: LeaderboardProps) {
           <div
             key={entry.map}
             data-map={entry.map}
-            className="glass flex items-center gap-4 rounded px-4 py-3"
+            className="glass chamfer flex items-center gap-4 px-4 py-3"
             style={!entry.record ? { opacity: 0.5 } : {}}
           >
             <span

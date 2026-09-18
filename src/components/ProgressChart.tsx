@@ -25,9 +25,9 @@ export function ProgressChart({ points }: ProgressChartProps) {
   const fmt = (d: string) => new Date(d + 'T12:00:00').toLocaleDateString('es-ES', { day: 'numeric', month: 'short' })
 
   return (
-    <div className="glass rounded p-4 mb-6">
+    <div className="glass chamfer p-4 mb-6">
       <div className="flex items-center justify-between mb-2">
-        <p className="text-xs" style={{ color: 'var(--text-secondary)' }}>Progreso</p>
+        <p className="hud-label">Progreso</p>
         <div className="flex gap-3 text-xs" style={{ color: 'var(--text-muted)' }}>
           <span className="flex items-center gap-1">
             <span className="inline-block w-3 h-0.5" style={{ background: 'var(--chart-record)' }} />

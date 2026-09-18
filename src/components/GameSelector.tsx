@@ -8,32 +8,36 @@ interface GameSelectorProps {
 
 export function GameSelector({ selected, onChange }: GameSelectorProps) {
   return (
-    <div className="flex gap-4 justify-center p-4">
-      {(['bo1', 'bo2'] as Game[]).map(game => (
-        <button
-          key={game}
-          onClick={() => onChange(game)}
-          className="relative rounded overflow-hidden transition-all outline-none"
-          style={{
-            opacity: selected === game ? 1 : 0.4,
-            outline: selected === game ? '2px solid var(--accent)' : 'none',
-            outlineOffset: '2px',
-            transform: selected === game ? 'scale(1.04)' : 'scale(1)',
-          }}
-          onMouseEnter={e => {
-            if (selected !== game) e.currentTarget.style.opacity = '0.65'
-          }}
-          onMouseLeave={e => {
-            if (selected !== game) e.currentTarget.style.opacity = '0.4'
-          }}
-        >
-          <img
-            src={GAME_COVERS[game]}
-            alt={game === 'bo1' ? 'Black Ops 1' : 'Black Ops 2'}
-            className="h-20 w-auto object-cover"
-          />
-        </button>
-      ))}
+    <div className="flex gap-3 justify-center p-4" role="tablist" aria-label="Juego">
+      {(['bo1', 'bo2'] as Game[]).map(game => {
+        const active = selected === game
+        const label = game === 'bo1' ? 'Black Ops 1' : 'Black Ops 2'
+        return (
+          <button
+            key={game}
+            role="tab"
+            aria-selected={active}
+            onClick={() => onChange(game)}
+            className="chamfer relative overflow-hidden outline-none flex items-center gap-3 pr-4"
+            style={{
+              background: active ? 'rgba(232,160,48,0.10)' : 'rgba(14,12,12,0.7)',
+              border: `1px solid ${active ? 'var(--border-strong)' : 'var(--border-soft)'}`,
+              boxShadow: active ? 'var(--shadow-accent)' : 'none',
+              opacity: active ? 1 : 0.55,
+              transition: 'opacity 250ms, box-shadow 250ms, border-color 250ms, background 250ms',
+            }}
+            onMouseEnter={e => { if (!active) e.currentTarget.style.opacity = '0.8' }}
+            onMouseLeave={e => { if (!active) e.currentTarget.style.opacity = '0.55' }}
+          >
+            <img src={GAME_COVERS[game]} alt="" className="h-16 w-auto object-cover" />
+            <span className="text-left">
+              <span className="block font-display text-base font-bold leading-none" style={{ color: active ? 'var(--accent)' : 'var(--text)' }}>
+                {label}
+              </span>
+            </span>
+          </button>
+        )
+      })}
     </div>
   )
 }

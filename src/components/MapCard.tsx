@@ -52,7 +52,7 @@ export function MapCard({ mapName, record, onClick, flashTs = 0 }: MapCardProps)
       ref={cardRef}
       data-map-card
       onClick={onClick}
-      className="glass rounded overflow-hidden text-left w-full outline-none"
+      className="glass chamfer overflow-hidden text-left w-full outline-none"
       onMouseEnter={() => hover(true)}
       onMouseLeave={() => hover(false)}
     >
@@ -62,7 +62,7 @@ export function MapCard({ mapName, record, onClick, flashTs = 0 }: MapCardProps)
         </div>
       )}
       <div className="p-3 pb-4 flex flex-col" style={{ height: '80px' }}>
-        <h3 className="text-xs font-semibold mb-2 leading-tight" style={{ color: 'var(--text-secondary)' }}>
+        <h3 className="font-display text-sm font-semibold mb-2 leading-tight tracking-wide" style={{ color: 'var(--text)' }}>
           {mapName}
         </h3>
         <div className="flex items-center gap-2 mt-auto">
@@ -83,7 +83,7 @@ export function MapCard({ mapName, record, onClick, flashTs = 0 }: MapCardProps)
               </div>
             </>
           ) : (
-            <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Sin récord</p>
+            <p className="text-xs tracking-[0.1em] uppercase" style={{ color: 'var(--text-muted)' }}>Sin récord</p>
           )}
         </div>
       </div>

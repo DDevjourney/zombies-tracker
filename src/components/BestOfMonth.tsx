@@ -18,10 +18,8 @@ export function BestOfMonth({ session, onClick }: BestOfMonthProps) {
   return (
     <button
       onClick={onClick}
-      className="glass rounded w-full text-left flex items-center gap-4 p-3 outline-none transition-colors"
-      style={{ borderColor: 'var(--border-strong)' }}
-      onMouseEnter={e => (e.currentTarget.style.background = 'var(--surface-elevated)')}
-      onMouseLeave={e => (e.currentTarget.style.background = '')}
+      className="glass chamfer w-full text-left flex items-center gap-4 p-3 outline-none"
+      style={{ borderColor: 'var(--border-strong)', boxShadow: 'var(--shadow-card), 0 0 0 1px rgba(232,160,48,0.08)' }}
     >
       {img && (
         <img
@@ -32,9 +30,7 @@ export function BestOfMonth({ session, onClick }: BestOfMonthProps) {
         />
       )}
       <div className="flex-1 min-w-0">
-        <p className="text-xs font-semibold uppercase" style={{ color: 'var(--accent)', letterSpacing: '0.08em' }}>
-          Mejor de {month}
-        </p>
+        <p className="hud-label whitespace-nowrap" style={{ color: 'var(--accent)' }}>Mejor de {month}</p>
         <p className="text-sm font-semibold truncate mt-0.5" style={{ color: 'var(--text)' }}>
           {session.map}
         </p>

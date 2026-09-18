@@ -98,33 +98,34 @@ function App() {
       <header
         className="sticky top-0 z-10 px-4 flex items-center justify-between"
         style={{
-          background: 'rgba(2, 2, 15, 0.8)',
-          backdropFilter: 'blur(12px)',
-          WebkitBackdropFilter: 'blur(12px)',
+          background: 'linear-gradient(180deg, rgba(10, 8, 10, 0.92), rgba(7, 6, 10, 0.85))',
+          backdropFilter: 'blur(14px)',
+          WebkitBackdropFilter: 'blur(14px)',
           borderBottom: '1px solid var(--border)',
-          height: '48px',
+          boxShadow: '0 1px 0 rgba(232,160,48,0.12), 0 10px 30px rgba(0,0,0,0.5)',
+          height: '52px',
         }}
       >
-        <h1
-          className="font-display cursor-pointer shrink-0 text-xl"
-          style={{ color: 'var(--accent)', fontWeight: 700, letterSpacing: '0.05em' }}
+        <button
+          className="font-display shrink-0 text-xl flex items-center gap-2 outline-none"
+          style={{ color: 'var(--accent)', fontWeight: 700, letterSpacing: '0.08em' }}
           onClick={() => setView('home')}
+          aria-label="Ir a mapas"
         >
-          ZOMBIES TRACKER
-        </h1>
-        <nav className="flex">
+          <span
+            aria-hidden
+            className="inline-block"
+            style={{ width: 8, height: 8, background: 'var(--accent)', boxShadow: '0 0 10px var(--accent-glow)', transform: 'rotate(45deg)' }}
+          />
+          Zombies Tracker
+        </button>
+        <nav className="flex" aria-label="Secciones">
           {(['home', 'leaderboard', 'stats'] as const).map(v => (
             <button
               key={v}
               onClick={() => setView(v)}
-              className="font-display px-3 text-sm transition-colors outline-none"
-              style={{
-                height: '48px',
-                fontWeight: 600,
-                color: view === v ? 'var(--accent)' : 'var(--text-secondary)',
-                borderBottom: view === v ? '2px solid var(--accent)' : '2px solid transparent',
-                letterSpacing: '0.03em',
-              }}
+              className="nav-tab outline-none"
+              aria-current={view === v ? 'page' : undefined}
             >
               {NAV_LABELS[v]}
             </button>
@@ -197,18 +198,13 @@ function App() {
       {(view === 'home' || view === 'map-detail') && !loading && (
         <button
           onClick={() => { setShowModal(true) }}
-          className="fixed right-5 w-16 h-16 rounded-full flex items-center justify-center text-4xl font-bold shadow-lg transition-colors z-20"
-          style={{
-            backgroundColor: 'var(--accent)',
-            color: '#02020f',
-            bottom: 'calc(1.25rem + env(safe-area-inset-bottom))',
-            boxShadow: '0 6px 24px rgba(232, 160, 48, 0.45)',
-          }}
+          className="btn btn-primary chamfer fixed right-5 w-16 h-16 z-20"
+          style={{ bottom: 'calc(1.25rem + env(safe-area-inset-bottom))', padding: 0, borderRadius: 0 }}
           aria-label="Añadir partida"
-          onMouseEnter={e => (e.currentTarget.style.backgroundColor = 'var(--accent-dim)')}
-          onMouseLeave={e => (e.currentTarget.style.backgroundColor = 'var(--accent)')}
         >
-          +
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="square" aria-hidden>
+            <path d="M12 5v14M5 12h14" />
+          </svg>
         </button>
       )}
 
