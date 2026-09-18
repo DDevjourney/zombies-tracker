@@ -84,6 +84,20 @@ export function MapDetail({
                 year: 'numeric',
               })}
             </p>
+            {record.video_url && (
+              <a
+                href={record.video_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 mt-4 px-3 py-1.5 rounded text-sm font-semibold transition-colors"
+                style={{ backgroundColor: 'rgba(207, 41, 41, 0.15)', color: 'var(--danger)', border: '1px solid rgba(207, 41, 41, 0.4)' }}
+                onMouseEnter={e => (e.currentTarget.style.backgroundColor = 'rgba(207, 41, 41, 0.3)')}
+                onMouseLeave={e => (e.currentTarget.style.backgroundColor = 'rgba(207, 41, 41, 0.15)')}
+                title={record.video_title ?? 'Ver vídeo'}
+              >
+                ▶ Ver la partida
+              </a>
+            )}
           </div>
         ) : (
           <div ref={recordRef} className="glass rounded p-6 mb-6 text-center">
@@ -139,6 +153,19 @@ export function MapDetail({
                     <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>
                       {new Date(session.played_at + 'T12:00:00').toLocaleDateString('es-ES')}
                     </span>
+                    {session.video_url && (
+                      <a
+                        href={session.video_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-sm leading-none transition-colors outline-none"
+                        style={{ color: 'var(--danger)' }}
+                        title={session.video_title ?? 'Ver vídeo'}
+                        aria-label={`Ver vídeo de la partida de ronda ${session.round}`}
+                      >
+                        ▶
+                      </a>
+                    )}
                     <button
                       onClick={() => onEditSession(session)}
                       className="text-sm leading-none transition-colors outline-none"

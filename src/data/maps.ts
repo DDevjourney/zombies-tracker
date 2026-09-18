@@ -27,5 +27,6 @@ export const MAPS: Record<Game, MapInfo[]> = {
     { name: 'Pueblo (Pena)', game: 'bo2' },
     { name: 'Granja (Pena)', game: 'bo2' },
     { name: 'TranZit (Pena)', game: 'bo2' },
+    { name: 'Buried (Pena)', game: 'bo2' },
   ],
 }
