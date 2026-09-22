@@ -28,6 +28,7 @@ export function AddSessionModal({
   const [map, setMap] = useState(editing?.map ?? defaultMap ?? maps[0].name)
   const [round, setRound] = useState(editing ? String(editing.round) : '')
   const [date, setDate] = useState(editing?.played_at ?? todayKey())
+  const [note, setNote] = useState(editing?.note ?? '')
   const [saved, setSaved] = useState(false)
   const [newRecord, setNewRecord] = useState(false)
   const [submitting, setSubmitting] = useState(false)
@@ -81,7 +82,14 @@ export function AddSessionModal({
     e.preventDefault()
     setSubmitting(true)
     try {
-      const changes: NewSession = { game, map, round: Number(round), played_at: date }
+      const trimmedNote = note.trim()
+      const changes: NewSession = {
+        game,
+        map,
+        round: Number(round),
+        played_at: date,
+        note: trimmedNote || null,
+      }
       const result = editing && onUpdate
         ? await onUpdate(editing.id, changes)
         : await onAdd(changes)
@@ -160,6 +168,18 @@ export function AddSessionModal({
                 onChange={e => setDate(e.target.value)}
                 required
                 className="field"
+              />
+            </div>
+
+            <div className="flex flex-col gap-1.5">
+              <label className="hud-label">Nota (opcional)</label>
+              <textarea
+                value={note}
+                onChange={e => setNote(e.target.value)}
+                placeholder="Ej: partida en solitario, se cayó el juego…"
+                rows={3}
+                maxLength={500}
+                className="field resize-none"
               />
             </div>
 

@@ -125,12 +125,13 @@ export function MapDetail({
               return (
                 <div
                   key={session.id}
-                  className="glass chamfer flex justify-between items-center px-4 py-3"
+                  className="glass chamfer flex flex-col px-4 py-3"
                   style={isRecord ? {
                     background: 'rgba(207, 41, 41, 0.12)',
                     borderColor: 'rgba(207, 41, 41, 0.4)',
                   } : {}}
                 >
+                  <div className="flex justify-between items-center">
                   <div className="flex items-center gap-3">
                     <span className="font-score text-lg" style={{ color: 'var(--text)' }}>
                       {session.round}
@@ -208,6 +209,15 @@ export function MapDetail({
                       </button>
                     )}
                   </div>
+                  </div>
+                  {session.note && (
+                    <p
+                      className="text-sm mt-2 whitespace-pre-wrap break-words"
+                      style={{ color: 'var(--text-secondary)' }}
+                    >
+                      {session.note}
+                    </p>
+                  )}
                 </div>
               )
             })}
