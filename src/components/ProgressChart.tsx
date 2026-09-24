@@ -18,7 +18,7 @@ export function ProgressChart({ points }: ProgressChartProps) {
   const x = (i: number) => PAD.left + (points.length === 1 ? innerW / 2 : (i / (points.length - 1)) * innerW)
   const y = (v: number) => PAD.top + innerH - (v / yMax) * innerH
 
-  const recordPath = points.map((p, i) => `${i === 0 ? 'M' : 'L'}${x(i)},${y(p.record)}`).join(' ')
+  const recordPath = points.map((p, i) => `${i === 0 ? 'M' : 'L'}${x(i)},${y(p.round)}`).join(' ')
   const ticks = [0, yMax / 2, yMax]
   const first = points[0].session.played_at
   const last = points[points.length - 1].session.played_at
