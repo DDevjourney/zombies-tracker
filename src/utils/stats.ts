@@ -12,9 +12,13 @@ export function getHistory(sessions: Session[], game: Game, map: string): Sessio
     .sort((a, b) => new Date(b.played_at).getTime() - new Date(a.played_at).getTime())
 }
 
+/**
+ * La partida supera el récord anterior del mapa. La primera partida de un mapa
+ * no cuenta: no hay nada que batir.
+ */
 export function isNewRecord(sessions: Session[], game: Game, map: string, round: number): boolean {
   const record = getRecord(sessions, game, map)
-  return record === null || round > record.round
+  return record !== null && round > record.round
 }
 
 export function getFavoriteMap(sessions: Session[], game: Game): string | null {

@@ -71,8 +71,8 @@ describe('isNewRecord', () => {
     expect(isNewRecord(sessions, 'bo1', 'Kino der Toten', 42)).toBe(false)
   })
 
-  it('devuelve true si no hay récord previo', () => {
-    expect(isNewRecord(sessions, 'bo1', 'Five', 1)).toBe(true)
+  it('devuelve false si no hay récord previo: la primera partida no bate nada', () => {
+    expect(isNewRecord(sessions, 'bo1', 'Five', 3)).toBe(false)
   })
 })
 
