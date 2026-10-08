@@ -57,6 +57,5 @@ export const MAP_IMAGES: Record<string, string> = {
   'Mob (Pena)': `${W}/a/aa/Mob_of_the_Dead_menu_selection_BO2.png/revision/latest/scale-to-width-down/300?cb=20161102222825`,
   'Pueblo (Pena)': `${W}/f/f8/GRTownSurvival.png/revision/latest/scale-to-width-down/300?cb=20250910155429`,
   'Granja (Pena)': `${W}/5/5e/GRFarmSurvival.png/revision/latest/scale-to-width-down/300?cb=20250910155625`,
-  'TranZit (Pena)': `${W}/1/19/BusDepotSurvival.png/revision/latest/scale-to-width-down/300?cb=20250910155539`,
   'Buried (Pena)': `${W}/7/71/Buried_menu_BOII.png/revision/latest/scale-to-width-down/300?cb=20161102222409`,
 }

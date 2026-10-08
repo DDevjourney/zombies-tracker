@@ -26,7 +26,6 @@ export const MAPS: Record<Game, MapInfo[]> = {
     { name: 'Buried', game: 'bo2' },         // Vengeance — jul 2013
     { name: 'Origins', game: 'bo2' },        // Apocalypse — ago 2013
     // Grief (Pena), mismo orden de DLC que sus mapas base
-    { name: 'TranZit (Pena)', game: 'bo2' }, // Bus Depot — lanzamiento
     { name: 'Granja (Pena)', game: 'bo2' },  // lanzamiento
     { name: 'Pueblo (Pena)', game: 'bo2' },  // lanzamiento
     { name: 'Mob (Pena)', game: 'bo2' },     // Uprising
