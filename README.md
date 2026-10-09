@@ -26,12 +26,10 @@ Una web privada para llevar el registro de tus récords de rondas en todos los m
 - **Cuadrícula de mapas**: cada mapa aparece en una tarjeta con su portada, tu récord y la fecha en que lo conseguiste.
 - **Registro de partidas**: apunta la ronda alcanzada, el mapa, la fecha y una nota opcional. Las partidas se pueden editar y borrar.
 - **Celebración de récords**: cuando superas tu mejor ronda en un mapa, la app lo anuncia con una animación.
-- **Iconos de rango de BO2**: cada partida muestra el rango que corresponde a la ronda alcanzada.
-- **Detalle de mapa**: récord actual, gráfica de progreso e historial completo de partidas.
-- **Mejor partida del mes**: destacada en la pantalla principal.
+- **Iconos de rango de BO2**: el récord de cada mapa se muestra con el icono de rango que corresponde a su ronda.
+- **Detalle de mapa**: récord actual, gráfica de progreso (a partir de dos partidas) e historial completo de partidas con sus notas.
 - **Ranking**: los mapas ordenados por tu ronda más alta.
 - **Estadísticas**: mejor récord global, mapa favorito y total de partidas por juego.
-- **Vídeos de YouTube**: una tarea diaria enlaza automáticamente tus últimos vídeos del canal con las partidas correspondientes.
 - **Instalable en el móvil (PWA)**: se puede añadir a la pantalla de inicio y abrir a pantalla completa, como una app.
 - **Acceso con contraseña** y diseño **adaptado a móvil y escritorio**.
 
@@ -53,9 +51,8 @@ Una web privada para llevar el registro de tus récords de rondas en todos los m
 | Estilos | Tailwind CSS 3 |
 | Animaciones | anime.js |
 | Base de datos | Supabase (PostgreSQL) |
-| Hosting y cron | Vercel |
-| Vídeos | YouTube Data API v3 |
-| Tests | Vitest + Testing Library |
+| Hosting | Vercel |
+| Tests | Vitest |
 | Fuentes | Barlow, Barlow Condensed y Share Tech Mono (Google Fonts) |
 | Imágenes | CDN de la wiki de Call of Duty en Fandom |
 
@@ -86,7 +83,7 @@ create table sessions (
 );
 ```
 
-Después aplica las migraciones de [`supabase/migrations`](supabase/migrations), que añaden las columnas de vídeo y de notas.
+Después aplica las migraciones de [`supabase/migrations`](supabase/migrations), que añaden columnas nuevas a la tabla (por ejemplo, la de notas).
 
 **3. Configura las variables de entorno**
 
@@ -121,21 +118,11 @@ npm run dev
 3. Añade las variables de entorno en los ajustes del proyecto de Vercel.
 4. Despliega. A partir de ahí, cada `git push` a `main` vuelve a desplegar automáticamente.
 
-### Sincronización con YouTube (opcional)
-
-La función [`api/sync-youtube.ts`](api/sync-youtube.ts) se ejecuta cada día a las 3:00 (UTC) mediante el cron definido en [`vercel.json`](vercel.json). Consulta los últimos vídeos de tu canal y los asigna a las partidas recientes que aún no tienen vídeo. Necesita estas variables, que solo existen en el servidor y por eso no llevan el prefijo `VITE_`:
-
-| Variable | Descripción |
-|----------|-------------|
-| `YOUTUBE_API_KEY` | Clave de Google Cloud con YouTube Data API v3 activada |
-| `YOUTUBE_CHANNEL_ID` | ID de tu canal (empieza por `UC`) |
-| `SUPABASE_URL` | La misma URL que `VITE_SUPABASE_URL` |
-| `SUPABASE_SERVICE_ROLE_KEY` | Clave `service_role` de Supabase (nunca la `anon`) |
-| `CRON_SECRET` | Cadena aleatoria con la que Vercel autentica el cron |
-
 ---
 
-## Sistema de rangos de BO2
+## Rangos
+
+Los iconos son los de los rangos de Black Ops 2, pero los cortes de ronda los define la app y se aplican igual en los dos juegos.
 
 | Ronda | Rango |
 |-------|-------|
