@@ -14,10 +14,6 @@ export interface Session {
   created_at: string
   /** Nota libre que el usuario puede adjuntar a la partida. */
   note?: string | null
-  /** Rellenados por api/sync-youtube.ts; null si no hay vídeo asociado. */
-  video_id?: string | null
-  video_url?: string | null
-  video_title?: string | null
 }
 
-export type NewSession = Omit<Session, 'id' | 'created_at' | 'video_id' | 'video_url' | 'video_title'>
+export type NewSession = Omit<Session, 'id' | 'created_at'>

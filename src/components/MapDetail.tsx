@@ -84,19 +84,6 @@ export function MapDetail({
                 year: 'numeric',
               })}
             </p>
-            {record.video_url && (
-              <a
-                href={record.video_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn btn-danger mt-4"
-                style={{ minHeight: 38, fontSize: '0.85rem' }}
-                title={record.video_title ?? 'Ver vídeo'}
-              >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden><path d="M7 4v16l13-8z"/></svg>
-                Ver la partida
-              </a>
-            )}
           </div>
         ) : (
           <div ref={recordRef} className="glass chamfer p-6 mb-6 text-center">
@@ -149,19 +136,6 @@ export function MapDetail({
                     <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>
                       {new Date(session.played_at + 'T12:00:00').toLocaleDateString('es-ES')}
                     </span>
-                    {session.video_url && (
-                      <a
-                        href={session.video_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="w-9 h-9 inline-flex items-center justify-center transition-colors outline-none"
-                        style={{ color: '#ff5a63' }}
-                        title={session.video_title ?? 'Ver vídeo'}
-                        aria-label={`Ver vídeo de la partida de ronda ${session.round}`}
-                      >
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden><path d="M7 4v16l13-8z"/></svg>
-                      </a>
-                    )}
                     <button
                       onClick={() => onEditSession(session)}
                       className="w-9 h-9 inline-flex items-center justify-center transition-colors outline-none"
