@@ -1,62 +1,79 @@
 # 🧟 Zombies Tracker
 
-A private web app to track high round records across all **Black Ops 1** and **Black Ops 2** zombies maps. Built for people who actually care about their records.
+Una web privada para llevar el registro de tus récords de rondas en todos los mapas de zombies de **Black Ops 1** y **Black Ops 2**. Hecha para quien se toma en serio sus récords.
 
 ![React](https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind-3-06B6D4?logo=tailwindcss&logoColor=white)
 ![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?logo=supabase&logoColor=white)
+![Vercel](https://img.shields.io/badge/Vercel-000000?logo=vercel&logoColor=white)
+
+![Pantalla de mapas](docs/screenshots/mapas.webp)
 
 ---
 
-## Features
+## Capturas
 
-- **Game switcher** — toggle between Black Ops 1 and Black Ops 2 with a single tap
-- **Map grid** — all maps displayed as cards with their cover art pulled from the CoD wiki
-- **Record tracking** — log the round you reached, the date you played, and the map
-- **BO2 rank icons** — bone, skull, skull + knife, skull + shotguns based on your round
-- **Leaderboard** — maps ranked by your highest round, with rank icons
-- **Stats** — best global record, favorite map, and total sessions per game
-- **Session history** — full log per map, with the option to delete a session if you made a mistake
-- **Password protected** — only people with the password can access the app
-- **Fully responsive** — works on mobile and desktop
+| Ranking | Estadísticas |
+|---------|--------------|
+| ![Ranking por mapa](docs/screenshots/ranking.webp) | ![Estadísticas](docs/screenshots/stats.webp) |
 
 ---
 
-## Maps Covered
+## Funcionalidades
 
-**Black Ops 1** — Nacht der Untoten, Verrückt, Shi No Numa, Der Riese, Kino der Toten, Five, Ascension, Call of the Dead, Shangri-La, Moon
-
-**Black Ops 2** — TranZit, Die Rise, Mob of the Dead, Buried, Origins, Nuketown Zombies + survival maps (Pueblo, Granja, Bus Depot) and their Pena variants
+- **Selector de juego**: cambia entre Black Ops 1 y Black Ops 2 con un toque. La app recuerda el último que elegiste.
+- **Cuadrícula de mapas**: cada mapa aparece en una tarjeta con su portada, tu récord y la fecha en que lo conseguiste.
+- **Registro de partidas**: apunta la ronda alcanzada, el mapa, la fecha y una nota opcional. Las partidas se pueden editar y borrar.
+- **Celebración de récords**: cuando superas tu mejor ronda en un mapa, la app lo anuncia con una animación.
+- **Iconos de rango de BO2**: cada partida muestra el rango que corresponde a la ronda alcanzada.
+- **Detalle de mapa**: récord actual, gráfica de progreso e historial completo de partidas.
+- **Mejor partida del mes**: destacada en la pantalla principal.
+- **Ranking**: los mapas ordenados por tu ronda más alta.
+- **Estadísticas**: mejor récord global, mapa favorito y total de partidas por juego.
+- **Vídeos de YouTube**: una tarea diaria enlaza automáticamente tus últimos vídeos del canal con las partidas correspondientes.
+- **Instalable en el móvil (PWA)**: se puede añadir a la pantalla de inicio y abrir a pantalla completa, como una app.
+- **Acceso con contraseña** y diseño **adaptado a móvil y escritorio**.
 
 ---
 
-## Tech Stack
+## Mapas incluidos
 
-| Layer | Technology |
-|-------|-----------|
+**Black Ops 1**: Nacht der Untoten, Verrückt, Shi No Numa, Der Riese, Kino der Toten, Five, Ascension, Call of the Dead, Shangri-La y Moon.
+
+**Black Ops 2**: TranZit, Bus Depot, Granja, Pueblo, Nuketown Zombies, Die Rise, Mob of the Dead, Buried y Origins, más los modos Pena de Granja, Pueblo, Mob y Buried.
+
+---
+
+## Tecnologías
+
+| Capa | Tecnología |
+|------|------------|
 | Frontend | React 18 + TypeScript + Vite |
-| Styling | Tailwind CSS v3 |
-| Database | Supabase (PostgreSQL) |
-| Hosting | Vercel |
-| Fonts | Inter (Google Fonts) |
-| Images | CoD Fandom Wiki CDN |
+| Estilos | Tailwind CSS 3 |
+| Animaciones | anime.js |
+| Base de datos | Supabase (PostgreSQL) |
+| Hosting y cron | Vercel |
+| Vídeos | YouTube Data API v3 |
+| Tests | Vitest + Testing Library |
+| Fuentes | Barlow, Barlow Condensed y Share Tech Mono (Google Fonts) |
+| Imágenes | CDN de la wiki de Call of Duty en Fandom |
 
 ---
 
-## Running Locally
+## Ejecutar en local
 
-**1. Clone the repo and install dependencies**
+**1. Clona el repositorio e instala las dependencias**
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/zombies-tracker.git
+git clone https://github.com/DDevjourney/zombies-tracker.git
 cd zombies-tracker
 npm install
 ```
 
-**2. Set up Supabase**
+**2. Prepara Supabase**
 
-Create a project at [supabase.com](https://supabase.com) and run this SQL in the SQL Editor:
+Crea un proyecto en [supabase.com](https://supabase.com) y ejecuta esto en el SQL Editor:
 
 ```sql
 create table sessions (
@@ -69,38 +86,64 @@ create table sessions (
 );
 ```
 
-**3. Configure environment variables**
+Después aplica las migraciones de [`supabase/migrations`](supabase/migrations), que añaden las columnas de vídeo y de notas.
 
-Create a `.env` file at the root:
+**3. Configura las variables de entorno**
+
+Copia `.env.example` como `.env` y rellena los valores:
 
 ```
-VITE_SUPABASE_URL=your_supabase_project_url
-VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
-VITE_APP_PASSWORD=your_chosen_password
+VITE_SUPABASE_URL=url_de_tu_proyecto_supabase
+VITE_SUPABASE_ANON_KEY=tu_clave_anon_de_supabase
+VITE_APP_PASSWORD=la_contraseña_que_elijas
 ```
 
-**4. Start the dev server**
+**4. Arranca el servidor de desarrollo**
 
 ```bash
 npm run dev
 ```
 
+### Otros comandos
+
+| Comando | Qué hace |
+|---------|----------|
+| `npm run build` | Compila la versión de producción |
+| `npm test` | Lanza los tests en modo vigilancia |
+| `npm run test:coverage` | Lanza los tests una vez con informe de cobertura |
+
 ---
 
-## Deploying to Vercel
+## Desplegar en Vercel
 
-1. Push the repo to GitHub
-2. Import it in [vercel.com](https://vercel.com)
-3. Add the three environment variables from above in the Vercel project settings
-4. Deploy — every future `git push` to `main` redeploys automatically
+1. Sube el repositorio a GitHub.
+2. Impórtalo en [vercel.com](https://vercel.com).
+3. Añade las variables de entorno en los ajustes del proyecto de Vercel.
+4. Despliega. A partir de ahí, cada `git push` a `main` vuelve a desplegar automáticamente.
+
+### Sincronización con YouTube (opcional)
+
+La función [`api/sync-youtube.ts`](api/sync-youtube.ts) se ejecuta cada día a las 3:00 (UTC) mediante el cron definido en [`vercel.json`](vercel.json). Consulta los últimos vídeos de tu canal y los asigna a las partidas recientes que aún no tienen vídeo. Necesita estas variables, que solo existen en el servidor y por eso no llevan el prefijo `VITE_`:
+
+| Variable | Descripción |
+|----------|-------------|
+| `YOUTUBE_API_KEY` | Clave de Google Cloud con YouTube Data API v3 activada |
+| `YOUTUBE_CHANNEL_ID` | ID de tu canal (empieza por `UC`) |
+| `SUPABASE_URL` | La misma URL que `VITE_SUPABASE_URL` |
+| `SUPABASE_SERVICE_ROLE_KEY` | Clave `service_role` de Supabase (nunca la `anon`) |
+| `CRON_SECRET` | Cadena aleatoria con la que Vercel autentica el cron |
 
 ---
 
-## BO2 Rank System
+## Sistema de rangos de BO2
 
-| Round range | Icon |
-|------------|------|
-| 1 – 10 | 🦴 Bone |
-| 11 – 20 | 💀 Skull |
-| 21 – 30 | 💀🔪 Skull + Knife |
-| 31+ | 💀🔫 Skull + Shotguns |
+| Ronda | Rango |
+|-------|-------|
+| 1 – 6 | 🦴 Hueso |
+| 7 – 9 | 🦴🦴 Huesos cruzados |
+| 10 – 14 | 💀 Calavera |
+| 15 – 19 | 💀 Calavera (ojos azules) |
+| 20 – 22 | 💀🔪 Calavera y cuchillo |
+| 23 – 26 | 💀🔪 Calavera y cuchillo (ojos azules) |
+| 27 – 29 | 💀🔫 Calavera y escopetas |
+| 30+ | 💀🔫 Calavera y escopetas (ojos azules) |
