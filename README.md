@@ -83,7 +83,7 @@ create table sessions (
 );
 ```
 
-Después aplica las migraciones de [`supabase/migrations`](supabase/migrations), que añaden columnas nuevas a la tabla (por ejemplo, la de notas).
+Después aplica las migraciones de [`supabase/migrations`](supabase/migrations), que añaden columnas nuevas a la tabla (por ejemplo, la de notas) y crean la tabla `blacklist` de la lista negra.
 
 **3. Configura las variables de entorno**
 

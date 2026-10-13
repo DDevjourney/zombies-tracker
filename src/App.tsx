@@ -6,18 +6,21 @@ import { AddSessionModal } from './components/AddSessionModal'
 import { MapDetail } from './components/MapDetail'
 import { Leaderboard } from './components/Leaderboard'
 import { Stats } from './components/Stats'
+import { Blacklist } from './components/Blacklist'
 import { BestOfMonth } from './components/BestOfMonth'
 import { useSessions } from './hooks/useSessions'
+import { useBlacklist } from './hooks/useBlacklist'
 import { getBestOfMonth } from './utils/stats'
 import { animate, reducedMotion } from './lib/motion'
 import type { Game, NewSession, Session } from './types'
 
-type View = 'home' | 'leaderboard' | 'stats' | 'map-detail'
+type View = 'home' | 'leaderboard' | 'stats' | 'map-detail' | 'blacklist'
 
 const NAV_LABELS: Record<string, string> = {
   home: 'Mapas',
   leaderboard: 'Ranking',
   stats: 'Stats',
+  blacklist: 'Lista negra',
 }
 
 function App() {
@@ -41,6 +44,7 @@ function App() {
   const mainRef = useRef<HTMLElement>(null)
 
   const { sessions, loading, addSession, updateSession, deleteSession } = useSessions()
+  const blacklist = useBlacklist()
 
   useEffect(() => {
     try {
@@ -120,7 +124,7 @@ function App() {
           Zombies Tracker
         </button>
         <nav className="flex" aria-label="Secciones">
-          {(['home', 'leaderboard', 'stats'] as const).map(v => (
+          {(['home', 'leaderboard', 'stats', 'blacklist'] as const).map(v => (
             <button
               key={v}
               onClick={() => setView(v)}
@@ -193,6 +197,10 @@ function App() {
             <Stats game={selectedGame} sessions={sessions} />
           </>
         )}
+
+        {view === 'blacklist' && (
+          <Blacklist entries={blacklist.entries} onAdd={blacklist.addNames} onRemove={blacklist.removeEntry} />
+        )}
       </main>
 
       {(view === 'home' || view === 'map-detail') && !loading && (
@@ -215,6 +223,7 @@ function App() {
           onAdd={handleAdd}
           editing={editingSession}
           onUpdate={handleUpdate}
+          onBlacklist={blacklist.addNames}
           onClose={closeModal}
         />
       )}

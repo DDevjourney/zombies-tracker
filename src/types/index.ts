@@ -16,4 +16,10 @@ export interface Session {
   note?: string | null
 }
 
+export interface BlacklistEntry {
+  id: string
+  name: string
+  created_at: string
+}
+
 export type NewSession = Omit<Session, 'id' | 'created_at'>

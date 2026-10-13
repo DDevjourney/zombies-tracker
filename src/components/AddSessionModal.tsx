@@ -12,6 +12,8 @@ interface AddSessionModalProps {
   /** Partida a modificar. Si viene, el modal entra en modo edición. */
   editing?: Session | null
   onUpdate?: (id: string, changes: NewSession) => Promise<{ isRecord: boolean }>
+  /** Guarda en la lista negra los jugadores con los que no se quiere jugar. */
+  onBlacklist?: (names: string[]) => Promise<void>
   onClose: () => void
 }
 
@@ -21,6 +23,7 @@ export function AddSessionModal({
   onAdd,
   editing,
   onUpdate,
+  onBlacklist,
   onClose,
 }: AddSessionModalProps) {
   const maps = MAPS[game]
@@ -29,6 +32,8 @@ export function AddSessionModal({
   const [round, setRound] = useState(editing ? String(editing.round) : '')
   const [date, setDate] = useState(editing?.played_at ?? todayKey())
   const [note, setNote] = useState(editing?.note ?? '')
+  const [avoid, setAvoid] = useState<string[]>([])
+  const [avoidDraft, setAvoidDraft] = useState('')
   const [saved, setSaved] = useState(false)
   const [newRecord, setNewRecord] = useState(false)
   const [submitting, setSubmitting] = useState(false)
@@ -78,6 +83,15 @@ export function AddSessionModal({
     animate(panelRef.current, { opacity: 0, scale: 0.92, duration: 200, ease: 'inQuad', onComplete: onClose })
   }
 
+  function commitAvoid(): string[] {
+    const name = avoidDraft.trim()
+    setAvoidDraft('')
+    if (!name || avoid.some(n => n.toLowerCase() === name.toLowerCase())) return avoid
+    const next = [...avoid, name]
+    setAvoid(next)
+    return next
+  }
+
   async function handleSubmit(e: FormEvent) {
     e.preventDefault()
     setSubmitting(true)
@@ -93,6 +107,14 @@ export function AddSessionModal({
       const result = editing && onUpdate
         ? await onUpdate(editing.id, changes)
         : await onAdd(changes)
+      const toBlacklist = commitAvoid()
+      if (toBlacklist.length > 0 && onBlacklist) {
+        try {
+          await onBlacklist(toBlacklist)
+        } catch (err) {
+          console.error('Error al guardar la lista negra:', err)
+        }
+      }
       setSavedRound(Number(round))
       setNewRecord(result.isRecord)
       setSaved(true)
@@ -182,6 +204,42 @@ export function AddSessionModal({
                 className="field resize-none"
               />
             </div>
+
+            {onBlacklist && (
+              <div className="flex flex-col gap-1.5">
+                <label className="hud-label">Jugadores a evitar (opcional)</label>
+                <input
+                  type="text"
+                  value={avoidDraft}
+                  onChange={e => setAvoidDraft(e.target.value)}
+                  onKeyDown={e => {
+                    if (e.key === 'Enter' || e.key === ',') {
+                      e.preventDefault()
+                      commitAvoid()
+                    }
+                  }}
+                  placeholder="Nombre y Enter para añadir"
+                  maxLength={60}
+                  className="field"
+                />
+                {avoid.length > 0 && (
+                  <div className="flex flex-wrap gap-1.5">
+                    {avoid.map(name => (
+                      <button
+                        key={name}
+                        type="button"
+                        onClick={() => setAvoid(avoid.filter(n => n !== name))}
+                        className="font-score text-xs px-2 py-1"
+                        style={{ border: '1px solid var(--danger)', color: 'var(--danger)' }}
+                        aria-label={`Quitar ${name}`}
+                      >
+                        {name} ✕
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
 
             <div className="flex gap-2 mt-1">
               <button type="button" onClick={close} className="btn btn-ghost flex-1">
